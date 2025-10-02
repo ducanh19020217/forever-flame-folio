@@ -6,8 +6,10 @@ const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Note: Add your own audio file URL here
-  const audioUrl = ""; // Add your audio file path
+  // Beautiful in White - Shane Filan (Wedding Song)
+  // Note: Please add your own licensed audio file URL here
+  // You can upload the song to your hosting or use a legal streaming service
+  const audioUrl = "https://cdn.pixabay.com/audio/2022/03/10/audio_2c87ba19c9.mp3"; // Placeholder romantic music
 
   useEffect(() => {
     // Create audio element
@@ -36,8 +38,7 @@ const MusicPlayer = () => {
     setIsPlaying(!isPlaying);
   };
 
-  // Don't render if no audio URL is provided
-  if (!audioUrl) return null;
+  // Always render the music player
 
   return (
     <div className="fixed bottom-8 right-8 z-40">

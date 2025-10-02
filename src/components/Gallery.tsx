@@ -40,7 +40,7 @@ const Gallery = () => {
               <img
                 src={image.src}
                 alt={image.alt}
-                className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110"
+                className="w-full h-72 object-cover transition-all duration-700 group-hover:scale-125 group-hover:rotate-2 group-hover:brightness-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
                 <p className="text-white font-medium">Xem chi tiết</p>

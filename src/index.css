@@ -94,6 +94,14 @@
   .shadow-soft {
     box-shadow: var(--shadow-soft);
   }
+
+  .image-hover-effect {
+    @apply transition-all duration-700 hover:scale-110 hover:brightness-110 hover:saturate-110;
+  }
+
+  .card-hover-effect {
+    @apply transition-all duration-500 hover:shadow-romantic hover:-translate-y-2;
+  }
 }
 
 @layer base {

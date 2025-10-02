@@ -24,18 +24,21 @@ const Hero = ({
     <section 
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      style={{
-        backgroundImage: `url(${heroImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
     >
+      <div 
+        className="absolute inset-0 animate-zoom-in"
+        style={{
+          backgroundImage: `url(${heroImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
       {/* Overlay */}
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
       
       {/* Content */}
       <div className="relative z-10 text-center px-4 py-20 animate-fade-in-up">
-        <Heart className="w-12 h-12 mx-auto mb-8 text-primary animate-float" />
+        <Heart className="w-12 h-12 mx-auto mb-8 text-primary animate-pulse-glow" />
         
         <h1 className="text-5xl md:text-7xl font-bold mb-4 text-foreground">
           {brideName}
