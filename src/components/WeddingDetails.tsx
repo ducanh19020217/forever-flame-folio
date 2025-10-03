@@ -14,7 +14,7 @@ interface EventDetails {
 const WeddingDetails = () => {
   const ceremony: EventDetails = {
     title: "Lễ Thành Hôn",
-    date: "Chủ Nhật, 01 Tháng 01, 2025",
+    date: "Thứ Bảy, 06 Tháng 12, 2025",
     time: "10:00 AM",
     venue: "Nhà Thờ Đức Bà",
     address: "01 Công xã Paris, Quận 1, TP. Hồ Chí Minh",
@@ -23,7 +23,7 @@ const WeddingDetails = () => {
 
   const reception: EventDetails = {
     title: "Tiệc Cưới",
-    date: "Chủ Nhật, 01 Tháng 01, 2025",
+    date: "Chủ Nhật, 07 Tháng 12, 2025",
     time: "6:00 PM",
     venue: "Trung Tâm Hội Nghị Gem Center",
     address: "8 Nguyễn Bỉnh Khiêm, Quận 1, TP. Hồ Chí Minh",

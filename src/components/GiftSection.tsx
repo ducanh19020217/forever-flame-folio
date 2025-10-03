@@ -90,22 +90,22 @@ const GiftSection = () => {
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           <BankCard 
             side="left"
-            name="Tên Chú Rể"
-            fullName="NGUYEN VAN A"
+            name="Đức Ánh"
+            fullName="NGUYEN DUKE ANH"
             bank="Vietcombank"
             account="1234567890"
-            accountName="NGUYEN VAN A"
-            qrData="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Bank:Vietcombank|Account:1234567890|Name:NGUYEN_VAN_A"
+            accountName="NGUYEN DUKE ANH"
+            qrData="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Bank:Vietcombank|Account:1234567890|Name:NGUYEN_DUKE_ANH"
             delay={0}
           />
           <BankCard 
             side="right"
-            name="Tên Cô Dâu"
-            fullName="TRAN THI B"
+            name="Hà Phương"
+            fullName="TRAN HA PHUONG"
             bank="Techcombank"
             account="0987654321"
-            accountName="TRAN THI B"
-            qrData="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Bank:Techcombank|Account:0987654321|Name:TRAN_THI_B"
+            accountName="TRAN HA PHUONG"
+            qrData="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Bank:Techcombank|Account:0987654321|Name:TRAN_HA_PHUONG"
             delay={0.2}
           />
         </div>

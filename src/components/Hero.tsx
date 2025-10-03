@@ -10,9 +10,9 @@ interface HeroProps {
 }
 
 const Hero = ({
-  brideName = "Tên Cô Dâu",
-  groomName = "Tên Chú Rể",
-  weddingDate = "01.01.2025",
+  brideName = "Hà Phương",
+  groomName = "Đức Ánh",
+  weddingDate = "06.12.2025",
   quote = "Tình yêu là hành trình đẹp nhất của cuộc đời"
 }: HeroProps) => {
   const scrollToSection = (id: string) => {

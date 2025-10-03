@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 
 const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Beautiful in White - Shane Filan (Wedding Song)
@@ -13,32 +14,55 @@ const MusicPlayer = () => {
 
   useEffect(() => {
     // Create audio element
-    audioRef.current = new Audio(audioUrl);
-    audioRef.current.loop = true;
-    audioRef.current.volume = 0.3;
+    const audio = new Audio(audioUrl);
+    audio.loop = true;
+    audio.volume = 0.3;
+    audio.preload = "auto";
+    
+    // Add event listeners
+    audio.addEventListener('canplaythrough', () => {
+      setIsLoaded(true);
+    });
+    
+    audio.addEventListener('error', (e) => {
+      console.error("Audio loading error:", e);
+    });
+    
+    audioRef.current = audio;
 
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
+        audioRef.current.src = "";
         audioRef.current = null;
       }
     };
-  }, []);
+  }, [audioUrl]);
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     if (!audioRef.current || !audioUrl) return;
 
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play().catch(error => {
-        console.log("Audio play failed:", error);
-      });
+    try {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        // Reset the audio to start if it's ended
+        if (audioRef.current.ended) {
+          audioRef.current.currentTime = 0;
+        }
+        
+        await audioRef.current.play();
+        setIsPlaying(true);
+      }
+    } catch (error) {
+      console.error("Audio play failed:", error);
+      // Try to reload the audio
+      if (audioRef.current) {
+        audioRef.current.load();
+      }
     }
-    setIsPlaying(!isPlaying);
   };
-
-  // Always render the music player
 
   return (
     <div className="fixed bottom-8 right-8 z-40">
@@ -46,14 +70,17 @@ const MusicPlayer = () => {
         onClick={togglePlay}
         className="w-14 h-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-romantic animate-float"
         aria-label={isPlaying ? "Tắt nhạc" : "Bật nhạc"}
+        disabled={!isLoaded}
       >
         {isPlaying ? (
-          <Volume2 className="w-6 h-6" />
+          <Volume2 className="w-6 h-6 animate-pulse" />
         ) : (
-          <VolumeX className="w-6 h-6" />
+          <Music className="w-6 h-6" />
         )}
       </Button>
-      <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-pulse" />
+      {isPlaying && (
+        <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-pulse" />
+      )}
     </div>
   );
 };

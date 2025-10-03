@@ -37,7 +37,7 @@ const milestones: Milestone[] = [
   },
   {
     title: "Ngày Cưới",
-    date: "Năm 2025",
+    date: "Tháng 12, 2025",
     description: "Chúng tôi hân hạnh mời bạn đến chung vui trong ngày trọng đại nhất cuộc đời chúng tôi.",
     image: timeline4,
     icon: <Church className="w-6 h-6" />

@@ -17,15 +17,15 @@ const Index = () => {
       <FallingPetals />
       <Navigation />
       <Hero 
-        brideName="Tên Cô Dâu"
-        groomName="Tên Chú Rể"
-        weddingDate="01.01.2025"
+        brideName="Hà Phương"
+        groomName="Đức Ánh"
+        weddingDate="06.12.2025"
         quote="Tình yêu là hành trình đẹp nhất của cuộc đời"
       />
       <Timeline />
       <Gallery />
       <WeddingDetails />
-      <Countdown weddingDate="2025-01-01T10:00:00" />
+      <Countdown weddingDate="2025-12-06T10:00:00" />
       <RSVP />
       <Guestbook />
       <GiftSection />
