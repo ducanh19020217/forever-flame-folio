@@ -112,10 +112,18 @@
       transform: translateY(-10vh) rotate(0deg);
       opacity: 1;
     }
+    50% {
+      opacity: 0.8;
+    }
     100% {
       transform: translateY(110vh) rotate(360deg);
       opacity: 0.3;
     }
+  }
+
+  /* Additional scroll animation effects */
+  .parallax-effect {
+    transform-style: preserve-3d;
   }
 }
 

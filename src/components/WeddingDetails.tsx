@@ -1,5 +1,6 @@
 import { MapPin, Clock, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 interface EventDetails {
   title: string;
@@ -30,7 +31,7 @@ const WeddingDetails = () => {
   };
 
   const EventCard = ({ event }: { event: EventDetails }) => (
-    <div className="bg-card p-8 rounded-2xl shadow-soft hover:shadow-romantic transition-all duration-300">
+    <div className="bg-card p-8 rounded-2xl shadow-soft hover:shadow-romantic transition-all duration-300 card-hover-effect">
       <h3 className="text-3xl font-bold text-foreground mb-6 text-center">
         {event.title}
       </h3>
@@ -69,6 +70,26 @@ const WeddingDetails = () => {
     </div>
   );
 
+  const AnimatedEventCard = ({ event, delay, direction }: { event: EventDetails; delay: number; direction: 'left' | 'right' }) => {
+    const { ref, isVisible } = useScrollAnimation({ threshold: 0.3 });
+    
+    return (
+      <div
+        ref={ref}
+        className={`transition-all duration-700 ${
+          isVisible 
+            ? direction === 'left' 
+              ? 'animate-slide-in-left' 
+              : 'animate-slide-in-right'
+            : 'opacity-0 translate-y-10'
+        }`}
+        style={{ animationDelay: `${delay}s` }}
+      >
+        <EventCard event={event} />
+      </div>
+    );
+  };
+
   return (
     <section id="details" className="py-20 px-4 bg-gradient-romantic">
       <div className="max-w-6xl mx-auto">
@@ -82,12 +103,8 @@ const WeddingDetails = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          <div className="animate-slide-in-left">
-            <EventCard event={ceremony} />
-          </div>
-          <div className="animate-slide-in-right">
-            <EventCard event={reception} />
-          </div>
+          <AnimatedEventCard event={ceremony} delay={0} direction="left" />
+          <AnimatedEventCard event={reception} delay={0.2} direction="right" />
         </div>
       </div>
     </section>
