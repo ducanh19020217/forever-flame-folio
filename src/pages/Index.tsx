@@ -6,12 +6,15 @@ import WeddingDetails from "@/components/WeddingDetails";
 import Countdown from "@/components/Countdown";
 import RSVP from "@/components/RSVP";
 import Guestbook from "@/components/Guestbook";
+import GiftSection from "@/components/GiftSection";
 import Footer from "@/components/Footer";
 import MusicPlayer from "@/components/MusicPlayer";
+import FallingPetals from "@/components/FallingPetals";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
+      <FallingPetals />
       <Navigation />
       <Hero 
         brideName="Tên Cô Dâu"
@@ -25,6 +28,7 @@ const Index = () => {
       <Countdown weddingDate="2025-01-01T10:00:00" />
       <RSVP />
       <Guestbook />
+      <GiftSection />
       <Footer />
       <MusicPlayer />
     </div>

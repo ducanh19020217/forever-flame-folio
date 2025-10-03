@@ -21,6 +21,7 @@ const Navigation = () => {
     { label: "Thư Viện", href: "#gallery" },
     { label: "Chi Tiết", href: "#details" },
     { label: "RSVP", href: "#rsvp" },
+    { label: "Mừng Cưới", href: "#gift" },
     { label: "Sổ Lưu Bút", href: "#guestbook" }
   ];
 
