@@ -34,35 +34,35 @@ const Hero = ({
         }}
       />
       {/* Overlay */}
-      <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/60" />
       
       {/* Content */}
-      <div className="relative z-10 text-center px-4 py-20 animate-fade-in-up">
-        <Heart className="w-12 h-12 mx-auto mb-8 text-primary animate-pulse-glow" />
+      <div className="relative z-10 text-center px-4 py-20 animate-fade-in-up max-w-4xl mx-auto">
+        <Heart className="w-14 h-14 mx-auto mb-8 text-white drop-shadow-lg animate-pulse-glow" />
         
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 text-foreground">
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-white drop-shadow-2xl">
           {brideName}
-          <span className="text-primary mx-4">&</span>
+          <span className="text-primary mx-4 drop-shadow-lg">&</span>
           {groomName}
         </h1>
         
-        <p className="text-xl md:text-2xl text-muted-foreground mb-6 font-light italic">
+        <p className="text-xl md:text-2xl text-white/90 mb-8 font-light italic drop-shadow-lg max-w-2xl mx-auto">
           "{quote}"
         </p>
         
-        <div className="flex items-center justify-center gap-4 mb-8">
-          <div className="h-px w-12 bg-primary" />
-          <p className="text-2xl md:text-3xl font-serif text-primary">
+        <div className="flex items-center justify-center gap-4 mb-12">
+          <div className="h-px w-16 bg-white/60" />
+          <p className="text-2xl md:text-3xl lg:text-4xl font-serif text-white drop-shadow-lg">
             {weddingDate}
           </p>
-          <div className="h-px w-12 bg-primary" />
+          <div className="h-px w-16 bg-white/60" />
         </div>
         
         <Button 
           onClick={() => scrollToSection('rsvp')}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg rounded-full shadow-romantic"
+          className="bg-primary hover:bg-primary/80 text-white px-10 py-7 text-lg md:text-xl rounded-full shadow-2xl hover:scale-105 transition-transform duration-300 font-semibold"
         >
-          RSVP Now
+          Xác Nhận Tham Dự
         </Button>
       </div>
 

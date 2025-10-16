@@ -59,7 +59,7 @@ const Guestbook = () => {
   };
 
   return (
-    <section id="guestbook" className="py-20 px-4 bg-gradient-romantic">
+    <section id="guestbook" className="section-spacing px-4 bg-muted/30">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12 animate-fade-in">
           <MessageCircle className="w-12 h-12 mx-auto mb-6 text-primary" />

@@ -73,7 +73,7 @@ const GiftSection = () => {
     );
   };
   return (
-    <section id="gift" className="py-20 px-4 bg-gradient-romantic">
+    <section id="gift" className="section-spacing px-4 bg-background">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-16 animate-fade-in-up">
           <Gift className="w-12 h-12 mx-auto mb-4 text-primary" />

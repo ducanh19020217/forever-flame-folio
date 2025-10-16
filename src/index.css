@@ -75,6 +75,10 @@
 }
 
 @layer utilities {
+  .section-spacing {
+    @apply py-20 md:py-28 lg:py-32;
+  }
+
   .text-gradient {
     @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
   }

@@ -19,7 +19,7 @@ const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
   return (
-    <section id="gallery" className="py-20 px-4 bg-background">
+    <section id="gallery" className="section-spacing px-4 bg-muted/30">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -39,7 +39,7 @@ const Gallery = () => {
                 <div
                   ref={ref}
                   key={index}
-                  className={`relative overflow-hidden rounded-2xl shadow-soft hover:shadow-romantic transition-all duration-700 cursor-pointer group ${
+                  className={`relative overflow-hidden rounded-2xl shadow-soft hover:shadow-romantic transition-all duration-500 cursor-pointer group aspect-square ${
                     isVisible 
                       ? index % 3 === 0 
                         ? 'animate-slide-in-left' 
@@ -48,16 +48,18 @@ const Gallery = () => {
                         : 'animate-slide-in-right'
                       : 'opacity-0'
                   }`}
-                  style={{ animationDelay: `${(index % 3) * 0.15}s` }}
+                  style={{ animationDelay: `${(index % 3) * 0.1}s` }}
                   onClick={() => setSelectedImage(index)}
                 >
                   <img
                     src={image.src}
                     alt={image.alt}
-                    className="w-full h-72 object-cover transition-all duration-700 group-hover:scale-125 group-hover:rotate-2 group-hover:brightness-110"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-                    <p className="text-white font-medium">Xem chi tiết</p>
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+                    <p className="text-white font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      Xem chi tiết
+                    </p>
                   </div>
                 </div>
               );

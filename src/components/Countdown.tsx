@@ -48,7 +48,7 @@ const Countdown = ({ weddingDate = "2025-01-01T10:00:00" }: { weddingDate?: stri
   );
 
   return (
-    <section id="countdown" className="py-20 px-4 bg-background">
+    <section id="countdown" className="section-spacing px-4 bg-gradient-romantic">
       <div className="max-w-4xl mx-auto text-center">
         <div className="mb-12 animate-fade-in">
           <Heart className="w-12 h-12 mx-auto mb-6 text-primary animate-float" />

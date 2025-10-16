@@ -46,7 +46,7 @@ const milestones: Milestone[] = [
 
 const Timeline = () => {
   return (
-    <section id="timeline" className="py-20 px-4 bg-gradient-romantic">
+    <section id="timeline" className="section-spacing px-4 bg-muted/30">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
