@@ -34,28 +34,28 @@ const Hero = ({
         }}
       />
       {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/60" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/15 to-black/25" />
       
       {/* Content */}
       <div className="relative z-10 text-center px-4 py-20 animate-fade-in-up max-w-4xl mx-auto">
         <Heart className="w-14 h-14 mx-auto mb-8 text-white drop-shadow-lg animate-pulse-glow" />
         
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-white drop-shadow-2xl">
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
           {brideName}
-          <span className="text-primary mx-4 drop-shadow-lg">&</span>
+          <span className="text-primary mx-4 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">&</span>
           {groomName}
         </h1>
         
-        <p className="text-xl md:text-2xl text-white/90 mb-8 font-light italic drop-shadow-lg max-w-2xl mx-auto">
+        <p className="text-xl md:text-2xl text-white mb-8 font-light italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)] max-w-2xl mx-auto">
           "{quote}"
         </p>
         
         <div className="flex items-center justify-center gap-4 mb-12">
-          <div className="h-px w-16 bg-white/60" />
-          <p className="text-2xl md:text-3xl lg:text-4xl font-serif text-white drop-shadow-lg">
+          <div className="h-px w-16 bg-white/80" />
+          <p className="text-2xl md:text-3xl lg:text-4xl font-serif text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
             {weddingDate}
           </p>
-          <div className="h-px w-16 bg-white/60" />
+          <div className="h-px w-16 bg-white/80" />
         </div>
         
         <Button 
