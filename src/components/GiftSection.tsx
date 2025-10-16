@@ -3,27 +3,27 @@ import { Card } from "@/components/ui/card";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const GiftSection = () => {
-  const BankCard = ({ 
-    side, 
-    name, 
-    fullName, 
-    bank, 
-    account, 
-    accountName, 
+  const BankCard = ({
+    side,
+    name,
+    fullName,
+    bank,
+    account,
+    accountName,
     qrData,
-    delay 
-  }: { 
-    side: string; 
-    name: string; 
-    fullName: string; 
-    bank: string; 
-    account: string; 
-    accountName: string; 
+    delay
+  }: {
+    side: string;
+    name: string;
+    fullName: string;
+    bank: string;
+    account: string;
+    accountName: string;
     qrData: string;
     delay: number;
   }) => {
     const { ref, isVisible } = useScrollAnimation({ threshold: 0.3 });
-    
+
     return (
       <div
         ref={ref}
@@ -44,7 +44,7 @@ const GiftSection = () => {
             <h3 className="text-2xl font-bold mb-2 text-foreground">{side === 'left' ? 'Chú Rể' : 'Cô Dâu'}</h3>
             <p className="text-lg text-foreground font-semibold mb-1">{name}</p>
           </div>
-          
+
           <div className="space-y-3 mb-6 text-left">
             <div>
               <p className="text-sm text-muted-foreground">Ngân hàng</p>
@@ -61,9 +61,9 @@ const GiftSection = () => {
           </div>
 
           <div className="bg-muted p-4 rounded-lg">
-            <img 
-              src={qrData} 
-              alt={`QR Code ${side === 'left' ? 'Chú Rể' : 'Cô Dâu'}`} 
+            <img
+              src={qrData}
+              alt={`QR Code ${side === 'left' ? 'Chú Rể' : 'Cô Dâu'}`}
               className="w-48 h-48 mx-auto transition-transform duration-300 hover:scale-110"
             />
             <p className="text-sm text-muted-foreground mt-2">Quét mã QR để chuyển khoản</p>
@@ -81,30 +81,30 @@ const GiftSection = () => {
             Mừng Cưới
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Sự hiện diện của quý khách là niềm vinh hạnh của chúng tôi. 
+            Sự hiện diện của quý khách là niềm vinh hạnh của chúng tôi.
             Nếu muốn gửi lời chúc mừng, quý khách có thể chuyển khoản qua thông tin dưới đây.
           </p>
         </div>
 
 
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <BankCard 
+          <BankCard
             side="left"
             name="Đức Ánh"
-            fullName="NGUYEN DUKE ANH"
+            fullName="DAM DUC ANH"
             bank="Vietcombank"
             account="1234567890"
-            accountName="NGUYEN DUKE ANH"
+            accountName="DAM DUC ANH"
             qrData="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Bank:Vietcombank|Account:1234567890|Name:NGUYEN_DUKE_ANH"
             delay={0}
           />
-          <BankCard 
+          <BankCard
             side="right"
             name="Hà Phương"
-            fullName="TRAN HA PHUONG"
+            fullName="BUI THI HA PHUONG"
             bank="Techcombank"
             account="0987654321"
-            accountName="TRAN HA PHUONG"
+            accountName="BUI THI HA PHUONG"
             qrData="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Bank:Techcombank|Account:0987654321|Name:TRAN_HA_PHUONG"
             delay={0.2}
           />

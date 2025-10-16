@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Heart, User, Clock } from "lucide-react";
 
 // Replace with your actual Google Apps Script URL
-const APPS_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
+const APPS_URL = "https://script.google.com/macros/s/AKfycbwzxHckMp_EAVQg-WMMhuM0GukBn-QcZRbk_jQEKuPri1nBPozII0qra0v1cJkex7zd/exec";
 
 interface Wish {
   ts: string;
