@@ -5,6 +5,7 @@ import Gallery from "@/components/Gallery";
 import WeddingDetails from "@/components/WeddingDetails";
 import Countdown from "@/components/Countdown";
 import RSVP from "@/components/RSVP";
+import GuestWishes from "@/components/GuestWishes";
 import Guestbook from "@/components/Guestbook";
 import GiftSection from "@/components/GiftSection";
 import Footer from "@/components/Footer";
@@ -27,6 +28,7 @@ const Index = () => {
       <WeddingDetails />
       <Countdown weddingDate="2025-12-06T10:00:00" />
       <RSVP />
+      <GuestWishes />
       <Guestbook />
       <GiftSection />
       <Footer />
