@@ -125,9 +125,43 @@
     }
   }
 
-  /* Additional scroll animation effects */
-  .parallax-effect {
-    transform-style: preserve-3d;
+  /* Performance optimizations for smooth animations */
+  .parallax-effect,
+  [class*="animate-"],
+  [class*="transition-"] {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  /* GPU-accelerated animations - only animate transform and opacity */
+  @media (prefers-reduced-motion: no-preference) {
+    .fade-in-optimized {
+      animation: fadeInOptimized 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      will-change: opacity, transform;
+    }
+    
+    @keyframes fadeInOptimized {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+  }
+
+  /* Content visibility for long sections */
+  section {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 500px;
+  }
+
+  /* Optimize image rendering */
+  img {
+    content-visibility: auto;
   }
 }
 

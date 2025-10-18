@@ -1,6 +1,7 @@
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-wedding.jpg";
+import { useIntersectionAppear } from "@/hooks/useIntersectionAppear";
 
 interface HeroProps {
   brideName?: string;
@@ -15,6 +16,8 @@ const Hero = ({
   weddingDate = "06.12.2025",
   quote = "Tình yêu là hành trình đẹp nhất của cuộc đời"
 }: HeroProps) => {
+  const { ref, isVisible } = useIntersectionAppear({ threshold: 0.2 });
+  
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: 'smooth' });
@@ -23,21 +26,31 @@ const Hero = ({
   return (
     <section 
       id="home"
+      ref={ref as React.RefObject<HTMLElement>}
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      <div 
-        className="absolute inset-0 animate-zoom-in"
-        style={{
-          backgroundImage: `url(${heroImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
+      <img
+        src={heroImage}
+        alt="Wedding celebration background"
+        fetchPriority="high"
+        decoding="async"
+        width={1920}
+        height={1080}
+        className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${
+          isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+        }`}
+        style={{ willChange: 'opacity, transform' }}
       />
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/15 to-black/25" />
       
       {/* Content */}
-      <div className="relative z-10 text-center px-4 py-20 animate-fade-in-up max-w-4xl mx-auto">
+      <div 
+        className={`relative z-10 text-center px-4 py-20 max-w-4xl mx-auto transition-all duration-1000 delay-300 ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        }`}
+        style={{ willChange: 'opacity, transform' }}
+      >
         <Heart className="w-14 h-14 mx-auto mb-8 text-white drop-shadow-lg animate-pulse-glow" />
         
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">

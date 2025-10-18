@@ -3,7 +3,7 @@ import timeline1 from "@/assets/timeline-1.jpg";
 import timeline2 from "@/assets/timeline-2.jpg";
 import timeline3 from "@/assets/timeline-3.jpg";
 import timeline4 from "@/assets/timeline-4.jpg";
-import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useIntersectionAppear } from "@/hooks/useIntersectionAppear";
 
 interface Milestone {
   title: string;
@@ -63,30 +63,28 @@ const Timeline = () => {
 
           {milestones.map((milestone, index) => {
             const MilestoneItem = () => {
-              const { ref, isVisible } = useScrollAnimation({ threshold: 0.3 });
+              const { ref, isVisible } = useIntersectionAppear({ threshold: 0.2 });
+              const isEven = index % 2 === 0;
               
               return (
                 <div
-                  ref={ref}
-                  key={index}
+                  ref={ref as React.RefObject<HTMLDivElement>}
                   className={`relative mb-16 last:mb-0 transition-all duration-700 ${
                     isVisible 
-                      ? index % 2 === 0 
-                        ? 'animate-slide-in-left' 
-                        : 'animate-slide-in-right'
-                      : 'opacity-0 translate-y-10'
+                      ? 'opacity-100 translate-x-0' 
+                      : `opacity-0 ${isEven ? '-translate-x-8' : 'translate-x-8'}`
                   }`}
-                  style={{ animationDelay: `${index * 0.1}s` }}
+                  style={{ 
+                    transitionDelay: `${index * 150}ms`,
+                    willChange: 'opacity, transform'
+                  }}
                 >
                   <div className={`flex flex-col md:flex-row gap-8 items-center ${
                     index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
                   }`}>
                     {/* Content */}
                     <div className={`flex-1 ${index % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
-                      <div className={`bg-card p-6 rounded-2xl shadow-soft hover:shadow-romantic transition-all duration-500 ${
-                        isVisible ? 'animate-scale-in' : 'opacity-0'
-                      }`}
-                      style={{ animationDelay: `${index * 0.15}s` }}>
+                      <div className="bg-card p-6 rounded-2xl shadow-soft hover:shadow-romantic transition-all duration-500">
                         <div className={`flex items-center gap-3 mb-3 ${index % 2 === 0 ? 'md:justify-end' : 'md:justify-start'}`}>
                           <div className="text-primary">{milestone.icon}</div>
                           <h3 className="text-2xl font-bold text-foreground">{milestone.title}</h3>
@@ -97,21 +95,20 @@ const Timeline = () => {
                     </div>
 
                     {/* Center Dot */}
-                    <div className={`hidden md:flex w-4 h-4 bg-primary rounded-full border-4 border-background shadow-romantic z-10 transition-all duration-500 ${
-                      isVisible ? 'animate-pulse-glow' : 'opacity-0'
-                    }`} 
-                    style={{ animationDelay: `${index * 0.2}s` }} />
+                    <div className="hidden md:flex w-4 h-4 bg-primary rounded-full border-4 border-background shadow-romantic z-10" />
 
                     {/* Image */}
                     <div className="flex-1">
-                      <div className={`relative overflow-hidden rounded-2xl shadow-romantic group transition-all duration-700 ${
-                        isVisible ? 'animate-scale-in' : 'opacity-0 scale-75'
-                      }`}
-                      style={{ animationDelay: `${index * 0.2}s` }}>
+                      <div className="relative overflow-hidden rounded-2xl shadow-romantic group">
                         <img
                           src={milestone.image}
                           alt={milestone.title}
-                          className="w-full h-64 object-cover transition-all duration-700 group-hover:scale-110 group-hover:brightness-110 group-hover:saturate-110"
+                          loading="lazy"
+                          decoding="async"
+                          width={800}
+                          height={600}
+                          className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"
+                          style={{ willChange: 'transform' }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </div>

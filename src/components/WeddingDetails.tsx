@@ -1,6 +1,6 @@
 import { MapPin, Clock, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useIntersectionAppear } from "@/hooks/useIntersectionAppear";
 
 interface EventDetails {
   title: string;
@@ -71,19 +71,20 @@ const WeddingDetails = () => {
   );
 
   const AnimatedEventCard = ({ event, delay, direction }: { event: EventDetails; delay: number; direction: 'left' | 'right' }) => {
-    const { ref, isVisible } = useScrollAnimation({ threshold: 0.3 });
+    const { ref, isVisible } = useIntersectionAppear({ threshold: 0.2 });
     
     return (
       <div
-        ref={ref}
+        ref={ref as React.RefObject<HTMLDivElement>}
         className={`transition-all duration-700 ${
           isVisible 
-            ? direction === 'left' 
-              ? 'animate-slide-in-left' 
-              : 'animate-slide-in-right'
-            : 'opacity-0 translate-y-10'
+            ? 'opacity-100 translate-x-0' 
+            : `opacity-0 ${direction === 'left' ? '-translate-x-8' : 'translate-x-8'}`
         }`}
-        style={{ animationDelay: `${delay}s` }}
+        style={{ 
+          transitionDelay: `${delay * 1000}ms`,
+          willChange: 'opacity, transform'
+        }}
       >
         <EventCard event={event} />
       </div>

@@ -4,7 +4,7 @@ import gallery1 from "@/assets/gallery-1.jpg";
 import gallery2 from "@/assets/gallery-2.jpg";
 import gallery3 from "@/assets/gallery-3.jpg";
 import gallery4 from "@/assets/gallery-4.jpg";
-import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useIntersectionAppear } from "@/hooks/useIntersectionAppear";
 
 const galleryImages = [
   { src: gallery1, alt: "Wedding bouquet" },
@@ -33,28 +33,29 @@ const Gallery = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {galleryImages.map((image, index) => {
             const ImageCard = () => {
-              const { ref, isVisible } = useScrollAnimation({ threshold: 0.2 });
+              const { ref, isVisible } = useIntersectionAppear({ threshold: 0.2 });
               
               return (
                 <div
-                  ref={ref}
-                  key={index}
-                  className={`relative overflow-hidden rounded-2xl shadow-soft hover:shadow-romantic transition-all duration-500 cursor-pointer group aspect-square ${
-                    isVisible 
-                      ? index % 3 === 0 
-                        ? 'animate-slide-in-left' 
-                        : index % 3 === 1 
-                        ? 'animate-fade-in-up' 
-                        : 'animate-slide-in-right'
-                      : 'opacity-0'
+                  ref={ref as React.RefObject<HTMLDivElement>}
+                  className={`relative overflow-hidden rounded-2xl shadow-soft hover:shadow-romantic cursor-pointer group aspect-square transition-all duration-700 ${
+                    isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                   }`}
-                  style={{ animationDelay: `${(index % 3) * 0.1}s` }}
+                  style={{ 
+                    transitionDelay: `${index * 100}ms`,
+                    willChange: 'opacity, transform'
+                  }}
                   onClick={() => setSelectedImage(index)}
                 >
                   <img
                     src={image.src}
                     alt={image.alt}
+                    loading="lazy"
+                    decoding="async"
+                    width={600}
+                    height={600}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    style={{ willChange: 'transform' }}
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
                     <p className="text-white font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">

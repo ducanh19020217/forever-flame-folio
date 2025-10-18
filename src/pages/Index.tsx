@@ -11,8 +11,11 @@ import GiftSection from "@/components/GiftSection";
 import Footer from "@/components/Footer";
 import MusicPlayer from "@/components/MusicPlayer";
 import FallingPetals from "@/components/FallingPetals";
+import { useAutoScroll } from "@/hooks/useAutoScroll";
 
 const Index = () => {
+  useAutoScroll({ speed: 0.5, resumeDelay: 2500, enabled: true });
+  
   return (
     <div className="min-h-screen">
       <FallingPetals />
