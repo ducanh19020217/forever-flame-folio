@@ -14,20 +14,20 @@ interface EventDetails {
 const WeddingDetails = () => {
   const ceremony: EventDetails = {
     title: "Lễ Thành Hôn",
-    date: "Thứ Bảy, 06 Tháng 12, 2025",
+    date: "Chủ nhật, 07 Tháng 12, 2025",
     time: "10:00 AM",
-    venue: "Nhà Thờ Đức Bà",
-    address: "01 Công xã Paris, Quận 1, TP. Hồ Chí Minh",
-    mapLink: "https://maps.google.com"
+    venue: "Tư gia nhà gái",
+    address: "Thôn Đà Phố, xã Hồng Châu, thành phố Hải Phòng",
+    mapLink: "https://maps.app.goo.gl/zV5sV2rQX1CFiJzN8"
   };
 
   const reception: EventDetails = {
     title: "Tiệc Cưới",
     date: "Chủ Nhật, 07 Tháng 12, 2025",
-    time: "6:00 PM",
-    venue: "Trung Tâm Hội Nghị Gem Center",
-    address: "8 Nguyễn Bỉnh Khiêm, Quận 1, TP. Hồ Chí Minh",
-    mapLink: "https://maps.google.com"
+    time: "11:00 AM",
+    venue: "Tư gia nhà trai",
+    address: "Thôn Thọ Sơn, xã Hồng Châu, thành phố Hải Phòng",
+    mapLink: "https://maps.app.goo.gl/XbCCP9bC3GMamQ7R6"
   };
 
   const EventCard = ({ event }: { event: EventDetails }) => (

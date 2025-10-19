@@ -13,7 +13,7 @@ interface HeroProps {
 const Hero = ({
   brideName = "Hà Phương",
   groomName = "Đức Ánh",
-  weddingDate = "06.12.2025",
+  weddingDate = "07.12.2025",
   quote = "Tình yêu là hành trình đẹp nhất của cuộc đời"
 }: HeroProps) => {
   const { ref, isVisible } = useIntersectionAppear({ threshold: 0.2 });
