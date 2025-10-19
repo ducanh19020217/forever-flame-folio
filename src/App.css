@@ -40,3 +40,136 @@
 .read-the-docs {
   color: #888;
 }
+
+/* ===== Split-flap Slide + Glow (fix double row) ===== */
+.flip-card {
+    position: relative;
+    display: inline-block;
+    border-radius: 1rem;
+    background: hsl(var(--card));
+    box-shadow: 0 10px 30px rgba(0,0,0,.12), inset 0 -2px 8px rgba(0,0,0,.06);
+    padding: .35em .55em;
+    min-width: 100px;
+    color: hsl(var(--primary));
+    font-weight: 800;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.flip-mask {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom,
+    rgba(255,255,255,.22),
+    rgba(0,0,0,.00) 35%,
+    rgba(0,0,0,.08) 65%,
+    rgba(255,255,255,.12));
+    mix-blend-mode: overlay;
+    pointer-events: none;
+}
+
+.flip-slot {
+    position: relative;
+    height: 1em;          /* chỉ đủ 1 hàng số */
+    line-height: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Lớp hiện hành (không anim) — chỉ 1 layer duy nhất */
+.flip-current {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+}
+
+/* Lớp dùng khi anim */
+.flip-old, .flip-new {
+    position: absolute; left: 0; right: 0;
+    text-align: center;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,.15));
+}
+
+.flip-old { top: 0;      transform: translateY(0%);    opacity: 1; }
+.flip-new { top: 0;      transform: translateY(100%);  opacity: 0; }
+
+/* Khi bật anim: hai lớp trượt qua nhau */
+.flip-anim .flip-old { animation: oldUp .42s cubic-bezier(.2,.7,.2,1) forwards; }
+.flip-anim .flip-new { animation: newUp .42s cubic-bezier(.2,.7,.2,1) forwards; }
+
+@keyframes oldUp {
+    0%   { transform: translateY(0%);    opacity: 1;   filter: blur(0px);  }
+    60%  { transform: translateY(-70%);  opacity: 0.7; filter: blur(.7px); }
+    100% { transform: translateY(-100%); opacity: 0;   filter: blur(0px);  }
+}
+@keyframes newUp {
+    0%   { transform: translateY(100%);  opacity: 0;   filter: blur(.7px); }
+    20%  { transform: translateY(60%);   opacity: .6;  filter: blur(1px);  }
+    100% { transform: translateY(0%);    opacity: 1;   filter: blur(0px);  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .flip-anim .flip-old, .flip-anim .flip-new { animation: none !important; }
+}
+
+.flip-card span, .flip-slot div {
+    display: block;
+    line-height: 1;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(-10vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0.8;
+    }
+}
+
+.petal {
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .petal {
+        animation: none;
+        opacity: 0.5;
+    }
+}
+@keyframes fw-pop {
+    0%   { transform: translate(0,0) scale(.6); opacity: 0; }
+    10%  { transform: translate(calc(cos(var(--angle))*var(--dist)),
+    calc(sin(var(--angle))*var(--dist))) scale(1);
+        opacity: 1; }
+    70%  { opacity: 1; }
+    100% { transform: translate(calc(cos(var(--angle))*var(--dist)),
+    calc(sin(var(--angle))*var(--dist) + 40px)) scale(1);
+        opacity: 0; }
+}
+
+.fw-spark {
+    position: absolute;
+    border-radius: 2px;
+    will-change: transform, opacity;
+    animation-name: fw-pop;
+    animation-timing-function: cubic-bezier(.2,.6,.2,1);
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+}
+
+/* Tôn trọng người dùng hạn chế chuyển động */
+@media (prefers-reduced-motion: reduce) {
+    .fw-spark { animation: none !important; opacity: .4; }
+}
+

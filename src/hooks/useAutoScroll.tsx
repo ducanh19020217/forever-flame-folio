@@ -1,207 +1,247 @@
-import { useEffect, useRef, useState, RefObject } from 'react';
+import { useEffect, useRef, useState, RefObject, useCallback } from "react";
 
-type BottomStrategy = 'stop' | 'loop' | 'bounce';
+type BottomStrategy = "stop" | "loop" | "bounce";
 
 interface AutoScrollOptions {
-  speed?: number; // pixels per second
-  resumeDelayMs?: number;
-  enabled?: boolean;
-  containerRef?: RefObject<HTMLElement>; // optional: scroll a specific container instead of window
-  bottomStrategy?: BottomStrategy;
+    speed?: number;                // px/s
+    resumeDelayMs?: number;        // tạm dừng sau khi user tương tác
+    enabled?: boolean;
+    containerRef?: RefObject<HTMLElement>; // nếu không truyền -> cuộn window
+    bottomStrategy?: BottomStrategy;
+    respectReducedMotion?: boolean; // mặc định true
+    maxFPS?: number | null;        // ví dụ 60; null = không giới hạn
 }
 
-export const useAutoScroll = ({ 
-  speed = 50, // px/s
-  resumeDelayMs = 2500,
-  enabled = true,
-  containerRef,
-  bottomStrategy = 'stop'
-}: AutoScrollOptions = {}) => {
-  const [isScrolling, setIsScrolling] = useState(true);
-  const [direction, setDirection] = useState<1 | -1>(1); // 1 = down, -1 = up (for bounce)
-  const timeoutRef = useRef<number>();
-  const rafRef = useRef<number>();
-  const lastTimestampRef = useRef<number>(0);
-  const userScrollDetectedRef = useRef(false);
+export const useAutoScroll = ({
+                                  speed = 120,
+                                  resumeDelayMs = 2000,
+                                  enabled = true,
+                                  containerRef,
+                                  bottomStrategy = "stop",
+                                  respectReducedMotion = false,
+                                  maxFPS = 60,
+                              }: AutoScrollOptions = {}) => {
+    const [isActive, setIsActive] = useState<boolean>(enabled);
 
-  // Get scroll element (window or container)
-  const getScrollElement = () => {
-    return containerRef?.current || window;
-  };
+    // refs nội bộ để không re-render
+    const speedRef = useRef(speed);
+    const dirRef = useRef<1 | -1>(1);
+    const rafRef = useRef<number | null>(null);
+    const lastTsRef = useRef<number>(0);
+    const accRef = useRef<number>(0);                  // tích lũy sub-pixel
+    const pausedUntilRef = useRef<number>(0);
+    const resumeTimerRef = useRef<number | null>(null);
+    const programmaticRef = useRef<boolean>(false);
+    const userIntentUntilRef = useRef<number>(0);      // cửa sổ 120ms sau input
+    const frameMinInterval = maxFPS ? (1000 / maxFPS) : 0;
 
-  const getScrollTop = () => {
-    const element = getScrollElement();
-    return element === window 
-      ? window.scrollY || document.documentElement.scrollTop
-      : (element as HTMLElement).scrollTop;
-  };
+    const now = () => performance.now();
 
-  const getScrollHeight = () => {
-    const element = getScrollElement();
-    return element === window
-      ? document.documentElement.scrollHeight
-      : (element as HTMLElement).scrollHeight;
-  };
+    // --- iOS-safe: window vs container ---
+    const isWindowMode = !containerRef?.current;
 
-  const getClientHeight = () => {
-    const element = getScrollElement();
-    return element === window
-      ? window.innerHeight
-      : (element as HTMLElement).clientHeight;
-  };
-
-  const scrollBy = (delta: number) => {
-    const element = getScrollElement();
-    if (element === window) {
-      window.scrollBy(0, delta);
-    } else {
-      (element as HTMLElement).scrollTop += delta;
-    }
-  };
-
-  // Detect scroll interaction listener
-  useEffect(() => {
-    if (!enabled) return;
-
-    // Respect prefers-reduced-motion
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
-      setIsScrolling(false);
-      return;
-    }
-
-    const pauseScrolling = () => {
-      setIsScrolling(false);
-      userScrollDetectedRef.current = true;
-      
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      
-      timeoutRef.current = window.setTimeout(() => {
-        setIsScrolling(true);
-        userScrollDetectedRef.current = false;
-      }, resumeDelayMs);
-    };
-
-    // Keyboard handler with specific keys
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const scrollKeys = ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Space', ' ', 'Home', 'End'];
-      if (scrollKeys.includes(e.key)) {
-        pauseScrolling();
-      }
-    };
-
-    const handleInteraction = () => {
-      pauseScrolling();
-    };
-
-    const element = getScrollElement();
-    const target = element === window ? window : element;
-
-    // Add passive listeners for better performance
-    target.addEventListener('wheel', handleInteraction, { passive: true });
-    target.addEventListener('touchstart', handleInteraction, { passive: true });
-    target.addEventListener('touchmove', handleInteraction, { passive: true });
-    target.addEventListener('scroll', handleInteraction, { passive: true }); // Detects scrollbar drag
-    window.addEventListener('keydown', handleKeyDown, { passive: true });
-
-    return () => {
-      target.removeEventListener('wheel', handleInteraction);
-      target.removeEventListener('touchstart', handleInteraction);
-      target.removeEventListener('touchmove', handleInteraction);
-      target.removeEventListener('scroll', handleInteraction);
-      window.removeEventListener('keydown', handleKeyDown);
-      
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
-    };
-  }, [enabled, resumeDelayMs, containerRef]);
-
-  // Auto-scroll animation loop
-  useEffect(() => {
-    if (!isScrolling || !enabled) {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
-      lastTimestampRef.current = 0;
-      return;
-    }
-
-    const scroll = (timestamp: number) => {
-      // Initialize on first frame
-      if (!lastTimestampRef.current) {
-        lastTimestampRef.current = timestamp;
-        rafRef.current = requestAnimationFrame(scroll);
-        return;
-      }
-
-      // Calculate time-based delta (accounts for throttling/low FPS)
-      const deltaTime = (timestamp - lastTimestampRef.current) / 1000; // seconds
-      lastTimestampRef.current = timestamp;
-
-      // Skip if delta is too large (tab was throttled/hidden)
-      if (deltaTime > 0.1) {
-        rafRef.current = requestAnimationFrame(scroll);
-        return;
-      }
-
-      const scrollTop = getScrollTop();
-      const scrollHeight = getScrollHeight();
-      const clientHeight = getClientHeight();
-      const maxScroll = scrollHeight - clientHeight;
-
-      // Calculate pixel delta based on speed (px/s) and time
-      const pixelDelta = speed * deltaTime * direction;
-
-      // Check boundaries
-      const atBottom = scrollTop >= maxScroll - 1;
-      const atTop = scrollTop <= 1;
-
-      if (atBottom && direction === 1) {
-        // Reached bottom
-        switch (bottomStrategy) {
-          case 'stop':
-            setIsScrolling(false);
-            return;
-          
-          case 'loop':
-            // Jump to top and continue
-            if (getScrollElement() === window) {
-              window.scrollTo(0, 0);
-            } else {
-              (getScrollElement() as HTMLElement).scrollTop = 0;
-            }
-            break;
-          
-          case 'bounce':
-            // Reverse direction
-            setDirection(-1);
-            break;
+    // Đọc vị trí cuộn
+    const readTop = () => {
+        if (!isWindowMode) {
+            return containerRef!.current!.scrollTop;
         }
-      } else if (atTop && direction === -1) {
-        // Reached top (only relevant for bounce)
-        setDirection(1);
-      } else {
-        // Normal scroll
-        scrollBy(pixelDelta);
-      }
-      
-      rafRef.current = requestAnimationFrame(scroll);
+        // window mode: iOS có thể dùng body thay vì html
+        return (
+            window.pageYOffset ??
+            document.documentElement.scrollTop ??
+            document.body.scrollTop ??
+            0
+        );
     };
 
-    rafRef.current = requestAnimationFrame(scroll);
-
-    return () => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
+    // Đọc kích thước
+    const readDims = () => {
+        if (!isWindowMode) {
+            const el = containerRef!.current!;
+            return { scrollHeight: el.scrollHeight, clientHeight: el.clientHeight };
+        }
+        const docEl = document.documentElement;
+        const body = document.body;
+        const scrollHeight = Math.max(
+            docEl?.scrollHeight || 0,
+            body?.scrollHeight || 0
+        );
+        const clientHeight = window.innerHeight; // viewport thực tế (thanh địa chỉ thay đổi)
+        return { scrollHeight, clientHeight };
     };
-  }, [isScrolling, speed, enabled, direction, bottomStrategy, containerRef]);
 
-  return { isScrolling, setIsScrolling };
+    // Cuộn tới vị trí y
+    const scrollToY = (y: number) => {
+        programmaticRef.current = true;
+        if (!isWindowMode) {
+            containerRef!.current!.scrollTop = y; // instant
+        } else {
+            window.scrollTo(0, y);                 // iOS chắc chắn ăn
+        }
+        queueMicrotask(() => { programmaticRef.current = false; });
+    };
+
+    const scrollByInt = (dyInt: number) => {
+        if (dyInt === 0) return;
+        scrollToY(readTop() + dyInt);
+    };
+
+    // --- điều chỉnh tốc độ từ props ---
+    useEffect(() => { speedRef.current = Math.max(0, speed); }, [speed]);
+
+    // --- pause/resume theo input người dùng ---
+    const requestResume = useCallback(() => {
+        if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+        resumeTimerRef.current = window.setTimeout(() => {
+            pausedUntilRef.current = 0;
+            if (!isActive && enabled) {
+                setIsActive(true);
+                tick(); // kick loop
+            }
+        }, resumeDelayMs) as unknown as number;
+    }, [resumeDelayMs, enabled, isActive]);
+
+    const pauseForUser = useCallback(() => {
+        if (isActive) setIsActive(false);
+        pausedUntilRef.current = now() + resumeDelayMs;
+        requestResume();
+    }, [isActive, requestResume, resumeDelayMs]);
+
+    const markUserIntent = () => { userIntentUntilRef.current = now() + 120; };
+
+    // --- listeners: KHÔNG pause theo 'scroll' để tránh giật ---
+    useEffect(() => {
+        if (!enabled) return;
+
+        const onWheel = () => { markUserIntent(); pauseForUser(); };
+        const onTouchStart = () => { markUserIntent(); pauseForUser(); };
+        const onTouchMove = () => { markUserIntent(); pauseForUser(); };
+        const onPointerDown = () => { markUserIntent(); pauseForUser(); };
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (["ArrowUp","ArrowDown","PageUp","PageDown","Home","End"," ","Space"].includes(e.key)) {
+                markUserIntent(); pauseForUser();
+            }
+        };
+        const onScroll = () => {
+            // Không pause theo scroll; chỉ theo intent
+            // if (programmaticRef.current) return;
+            // if (now() <= userIntentUntilRef.current) pauseForUser();
+        };
+
+        const el: any = isWindowMode ? window : containerRef!.current!;
+        el.addEventListener("wheel", onWheel, { passive: true });
+        el.addEventListener("touchstart", onTouchStart, { passive: true });
+        el.addEventListener("touchmove", onTouchMove, { passive: true });
+        el.addEventListener("pointerdown", onPointerDown, { passive: true });
+        el.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("keydown", onKeyDown, { passive: true });
+
+        return () => {
+            el.removeEventListener("wheel", onWheel);
+            el.removeEventListener("touchstart", onTouchStart);
+            el.removeEventListener("touchmove", onTouchMove);
+            el.removeEventListener("pointerdown", onPointerDown);
+            el.removeEventListener("scroll", onScroll);
+            window.removeEventListener("keydown", onKeyDown);
+            if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+        };
+    }, [enabled, pauseForUser, isWindowMode, containerRef]);
+
+    // --- visibility & reduced motion ---
+    useEffect(() => {
+        if (!enabled) return;
+        const onVis = () => {
+            if (document.visibilityState === "hidden") {
+                if (isActive) setIsActive(false);
+            } else {
+                pausedUntilRef.current = now() + 250;
+                requestResume();
+            }
+        };
+        document.addEventListener("visibilitychange", onVis);
+        return () => document.removeEventListener("visibilitychange", onVis);
+    }, [enabled, isActive, requestResume]);
+
+    // --- rAF loop ---
+    const tick = useCallback(() => {
+        if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+        lastTsRef.current = 0;
+
+        const frame = (ts: number) => {
+            if (!isActive || !enabled) return;
+
+            // reduced motion tắt hẳn
+            if (respectReducedMotion && window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) {
+                return;
+            }
+
+            if (lastTsRef.current === 0) {
+                lastTsRef.current = ts;
+                rafRef.current = requestAnimationFrame(frame);
+                return;
+            }
+
+            const dtMs = ts - lastTsRef.current;
+            if (frameMinInterval && dtMs < frameMinInterval) {
+                rafRef.current = requestAnimationFrame(frame);
+                return;
+            }
+
+            // clamp dt để tránh nhảy vọt
+            let dt = Math.min(dtMs / 1000, 0.05);
+            lastTsRef.current = ts;
+
+            if (pausedUntilRef.current && now() < pausedUntilRef.current) {
+                rafRef.current = requestAnimationFrame(frame);
+                return;
+            }
+
+            const { scrollHeight, clientHeight } = readDims();
+            const maxScroll = Math.max(0, scrollHeight - clientHeight);
+            const y = readTop();
+
+            // áp dụng accumulator -> chỉ scroll số nguyên px
+            accRef.current += speedRef.current * dt * dirRef.current;
+            const deltaInt = accRef.current > 0 ? Math.floor(accRef.current) : Math.ceil(accRef.current);
+            accRef.current -= deltaInt;
+
+            // 👇 tolerance lớn hơn cho iOS (thanh địa chỉ co giãn)
+            const TOL = 6;
+            const atBottom = y >= maxScroll - TOL;
+            const atTop = y <= TOL;
+
+            if (dirRef.current === 1 && atBottom) {
+                if (bottomStrategy === "stop") {
+                    setIsActive(false);
+                    return;
+                } else if (bottomStrategy === "loop") {
+                    scrollToY(0);
+                } else {
+                    dirRef.current = -1; // bounce
+                }
+            } else if (dirRef.current === -1 && atTop) {
+                if (bottomStrategy === "bounce") dirRef.current = 1;
+            } else {
+                scrollByInt(deltaInt);
+            }
+
+            rafRef.current = requestAnimationFrame(frame);
+        };
+
+        rafRef.current = requestAnimationFrame(frame);
+    }, [enabled, isActive, bottomStrategy, respectReducedMotion, frameMinInterval]);
+
+    // đồng bộ enabled -> isActive và kick loop
+    useEffect(() => {
+        setIsActive(enabled);
+        if (enabled) tick();
+        else if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [enabled]);
+
+    // public api đơn giản
+    const start = useCallback(() => { if (!isActive) { setIsActive(true); tick(); } }, [isActive, tick]);
+    const stop  = useCallback(() => { if (isActive) setIsActive(false); if (rafRef.current) cancelAnimationFrame(rafRef.current); }, [isActive]);
+
+    return { isActive, start, stop, setSpeed: (v:number)=>{ speedRef.current = Math.max(0, v); } };
 };

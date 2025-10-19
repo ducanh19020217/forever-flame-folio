@@ -1,88 +1,126 @@
+"use client";
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Music, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const MusicPlayer = () => {
+const SAFE_AUDIO_URL = "/audio/wedding-song.mp3";
+
+function useIsClient() {
+    const [ready, setReady] = useState(false);
+    useEffect(() => setReady(true), []);
+    return ready;
+}
+
+export default function MusicPlayer() {
+    const isClient = useIsClient();
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
     const [showPrompt, setShowPrompt] = useState(true);
     const audioRef = useRef<HTMLAudioElement | null>(null);
+    const unlockedRef = useRef(false);
 
-    const audioUrl = "/audio/wedding-song.mp3";
-
-    useEffect(() => {
-        const audio = new Audio(audioUrl);
-        audio.loop = true;
-        audio.volume = 0.7;
-        audio.preload = "auto";
-
-        audio.addEventListener("canplaythrough", () => {
-            setIsLoaded(true);
-        });
-
-        audio.addEventListener("error", (e) => {
-            console.error("Audio loading error:", e);
-        });
-
-        audioRef.current = audio;
-
-        return () => {
-            audio.pause();
-            audio.src = "";
-            audioRef.current = null;
-        };
-    }, [audioUrl]);
-
-    const togglePlay = async () => {
-        if (!audioRef.current) return;
+    // iOS unlock: gọi play() trong một gesture rồi pause ngay
+    const unlockAudio = async () => {
+        const a = audioRef.current;
+        if (unlockedRef.current || !a) return;
         try {
-            if (isPlaying) {
-                audioRef.current.pause();
-                setIsPlaying(false);
-            } else {
-                await audioRef.current.play();
-                setIsPlaying(true);
-                setShowPrompt(false);
-            }
-        } catch (error) {
-            console.error("Audio play failed:", error);
+            if (!a.src) a.src = SAFE_AUDIO_URL;
+            await a.play();
+            a.pause();
+            unlockedRef.current = true;
+        } catch {
+            // bỏ qua: sẽ unlock ở lần bấm kế tiếp
         }
     };
 
-    return (
+    // Lắng nghe sự kiện load + unlock lần chạm đầu trên iOS
+    useEffect(() => {
+        const a = audioRef.current;
+        if (!a) return;
+
+        const onCanPlay = () => setIsLoaded(true);
+        const onError = (e: any) => console.error("Audio error:", e);
+
+        a.addEventListener("canplaythrough", onCanPlay, { once: true });
+        a.addEventListener("loadedmetadata", onCanPlay, { once: true });
+        a.addEventListener("error", onError);
+
+        const touchUnlock = () => unlockAudio();
+        window.addEventListener("touchstart", touchUnlock, { passive: true, once: true });
+
+        return () => {
+            a.removeEventListener("canplaythrough", onCanPlay);
+            a.removeEventListener("loadedmetadata", onCanPlay);
+            a.removeEventListener("error", onError);
+            window.removeEventListener("touchstart", touchUnlock);
+        };
+    }, []);
+
+    const togglePlay = async () => {
+        const a = audioRef.current;
+        if (!a) return;
+        try {
+            await unlockAudio();
+
+            if (isPlaying) {
+                a.pause();
+                setIsPlaying(false);
+            } else {
+                if (!a.src) a.src = SAFE_AUDIO_URL;
+                await a.play();
+                setIsPlaying(true);
+                setShowPrompt(false);
+            }
+        } catch (err) {
+            console.error("Audio play failed:", err);
+            // vẫn hiện prompt để user bấm lại
+            setShowPrompt(true);
+        }
+    };
+
+    if (!isClient) return null;
+
+    return createPortal(
         <>
-            {/* Thông báo mời bật nhạc */}
-            {showPrompt && isLoaded && (
-                <div className="fixed top-6 right-6 bg-white shadow-lg rounded-xl px-4 py-3 z-50 animate-fade-in">
-                    <p className="text-gray-700 font-medium mb-2">
-                        🎵 Nhấn để bật nhạc cho không khí thêm lãng mạn nhé!
-                    </p>
+            {/* audio trong DOM để iOS nhận gesture hợp lệ */}
+            <audio ref={audioRef} src={SAFE_AUDIO_URL} preload="auto" loop />
+
+            {/* Prompt bật nhạc (không phụ thuộc isLoaded để tránh “mất” trên 1 số trình duyệt) */}
+            {showPrompt && (
+                <div
+                    className="fixed z-[99999] bg-white text-slate-700 rounded-xl shadow-2xl px-4 py-3"
+                    style={{
+                        top: `calc(env(safe-area-inset-top, 0px) + 1rem)`,
+                        right: `calc(env(safe-area-inset-right, 0px) + 1rem)`,
+                    }}
+                >
+                    <p className="font-medium mb-2">🎵 Nhấn để bật nhạc cho không khí thêm lãng mạn nhé!</p>
                     <Button onClick={togglePlay} className="bg-pink-500 hover:bg-pink-600 text-white">
-                        Bật nhạc
+                        {isPlaying ? "Tắt nhạc" : "Bật nhạc"}
                     </Button>
                 </div>
             )}
 
-            {/* Nút điều khiển nổi */}
-            <div className="fixed bottom-8 right-8 z-40">
+            {/* Nút nổi: chỉ Tailwind utility, z-index rất cao, safe-area inline */}
+            <div
+                className="fixed z-[2147483647] pointer-events-auto"
+                style={{
+                    bottom: `calc(env(safe-area-inset-bottom, 0px) + 1.25rem)`,
+                    right: `calc(env(safe-area-inset-right, 0px) + 1.25rem)`,
+                }}
+            >
                 <Button
                     onClick={togglePlay}
-                    className="w-14 h-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-romantic animate-float"
+                    className="w-14 h-14 rounded-full shadow-xl bg-primary hover:bg-primary/90 text-primary-foreground"
                     aria-label={isPlaying ? "Tắt nhạc" : "Bật nhạc"}
-                    disabled={!isLoaded}
+                    disabled={false /* vẫn cho bấm để trigger unlock ngay cả khi chưa isLoaded */}
                 >
-                    {isPlaying ? (
-                        <Volume2 className="w-6 h-6 animate-pulse" />
-                    ) : (
-                        <Music className="w-6 h-6" />
-                    )}
+                    {isPlaying ? <Volume2 className="w-6 h-6 animate-pulse" /> : <Music className="w-6 h-6" />}
                 </Button>
-                {isPlaying && (
-                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-pulse" />
-                )}
+                {isPlaying && <div className="absolute -top-1 -right-1 w-3 h-3 bg-cyan-400 rounded-full animate-pulse" />}
             </div>
-        </>
+        </>,
+        document.body
     );
-};
-
-export default MusicPlayer;
+}
