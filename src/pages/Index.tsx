@@ -14,7 +14,7 @@ import FallingPetals from "@/components/FallingPetals";
 import { useAutoScroll } from "@/hooks/useAutoScroll";
 
 const Index = () => {
-  useAutoScroll({ speed: 50, resumeDelayMs: 2500, enabled: true });
+  useAutoScroll({ speed: 120, resumeDelayMs: 2500, enabled: true });
   
   return (
     <div className="min-h-screen">
