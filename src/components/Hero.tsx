@@ -27,7 +27,7 @@ const Hero = ({
     <section 
       id="home"
       ref={ref as React.RefObject<HTMLElement>}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="image-wrap relative min-h-screen flex items-center justify-center overflow-hidden"
     >
       <img
         src={heroImage}
@@ -52,12 +52,14 @@ const Hero = ({
         style={{ willChange: 'opacity, transform' }}
       >
         <Heart className="w-14 h-14 mx-auto mb-8 text-white drop-shadow-lg animate-pulse-glow" />
-        
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
-          {brideName}
-          <span className="text-primary mx-4 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">&</span>
-          {groomName}
-        </h1>
+
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-white text-center leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
+              <div className="flex flex-col lg:flex-row justify-center items-center">
+                  <span className="whitespace-nowrap">{brideName}</span>
+                  <span className="text-primary mx-4 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">&</span>
+                  <span className="whitespace-nowrap">{groomName}</span>
+              </div>
+          </h1>
         
         <p className="text-xl md:text-2xl text-white mb-8 font-light italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)] max-w-2xl mx-auto">
           "{quote}"

@@ -13,16 +13,16 @@ interface EventDetails {
 
 const WeddingDetails = () => {
   const ceremony: EventDetails = {
-    title: "Lễ Thành Hôn",
+    title: "Lễ Đón Dâu",
     date: "Chủ nhật, 07 Tháng 12, 2025",
     time: "10:00 AM",
     venue: "Tư gia nhà gái",
-    address: "Thôn Đà Phố, xã Hồng Châu, thành phố Hải Phòng",
+    address: "Thôn Đà Phố, xã Khúc Thừa Dụ, thành phố Hải Phòng",
     mapLink: "https://maps.app.goo.gl/zV5sV2rQX1CFiJzN8"
   };
 
   const reception: EventDetails = {
-    title: "Tiệc Cưới",
+    title: "Lễ Thành Hôn",
     date: "Chủ Nhật, 07 Tháng 12, 2025",
     time: "11:00 AM",
     venue: "Tư gia nhà trai",

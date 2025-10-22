@@ -38,7 +38,7 @@ const Gallery = () => {
               return (
                 <div
                   ref={ref as React.RefObject<HTMLDivElement>}
-                  className={`relative overflow-hidden rounded-2xl shadow-soft hover:shadow-romantic cursor-pointer group aspect-square transition-all duration-700 ${
+                  className={`image-wrap relative overflow-hidden rounded-2xl shadow-soft hover:shadow-romantic cursor-pointer group aspect-square transition-all duration-700 ${
                     isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                   }`}
                   style={{ 
@@ -74,7 +74,7 @@ const Gallery = () => {
       {/* Lightbox */}
       {selectedImage !== null && (
         <div
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 animate-fade-in"
+          className="image-wrap fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 animate-fade-in"
           onClick={() => setSelectedImage(null)}
         >
           <button

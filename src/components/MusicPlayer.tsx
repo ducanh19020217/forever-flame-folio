@@ -91,7 +91,7 @@ export default function MusicPlayer() {
                 <div
                     className="fixed z-[99999] bg-white text-slate-700 rounded-xl shadow-2xl px-4 py-3"
                     style={{
-                        top: `calc(env(safe-area-inset-top, 0px) + 1rem)`,
+                        top: `calc(env(safe-area-inset-top, 0px) + 4rem)`,
                         right: `calc(env(safe-area-inset-right, 0px) + 1rem)`,
                     }}
                 >
@@ -106,8 +106,8 @@ export default function MusicPlayer() {
             <div
                 className="fixed z-[2147483647] pointer-events-auto"
                 style={{
-                    bottom: `calc(env(safe-area-inset-bottom, 0px) + 1.25rem)`,
-                    right: `calc(env(safe-area-inset-right, 0px) + 1.25rem)`,
+                    bottom: `calc(env(safe-area-inset-bottom, 0px) + 2.25rem)`,
+                    right: `calc(env(safe-area-inset-right, 0px) + 2.25rem)`,
                 }}
             >
                 <Button

@@ -173,3 +173,22 @@
     .fw-spark { animation: none !important; opacity: .4; }
 }
 
+
+/* Tắt snapping khi đang auto-scroll để tránh “đập khung” */
+[data-autoscrolling="true"] {
+    scroll-snap-type: none !important;
+}
+
+/* Ổn định viewport iOS; ưu tiên svh trong layout (đã set ở class) */
+html, body {
+    overscroll-behavior-y: none; /* nếu không cần hiệu ứng bounce mặc định */
+}
+
+/* Wrapper ảnh lớn để compositing ổn định hơn khi cuộn */
+.image-wrap {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    will-change: transform;
+    contain: paint;
+}
+

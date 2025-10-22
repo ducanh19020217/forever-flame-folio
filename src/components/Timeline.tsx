@@ -99,7 +99,7 @@ const Timeline = () => {
 
                     {/* Image */}
                     <div className="flex-1">
-                      <div className="relative overflow-hidden rounded-2xl shadow-romantic group">
+                      <div className="image-wrap relative overflow-hidden rounded-2xl shadow-romantic group">
                         <img
                           src={milestone.image}
                           alt={milestone.title}
