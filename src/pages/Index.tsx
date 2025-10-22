@@ -16,45 +16,34 @@ import {useEffect, useRef, useState} from "react";
 import Fireworks from "@/components/Fireworks.tsx";
 
 const Index = () => {
-    const [boom, setBoom] = useState(true);
+
+
+    const isiOSSafari = typeof navigator !== "undefined"
+        && /iPhone|iPad|iPod/.test(navigator.userAgent)
+        && /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
     const auto = useAutoScroll({
         speed: 30,
         resumeDelayMs: 2500,
         enabled: true,
         bottomStrategy: "stop",
-        respectReducedMotion: false,
-        maxFPS: 60,
+        respectReducedMotion: true,
+        maxFPS: isiOSSafari ? 30 : 60,
     });
 
-    useEffect(() => {
-        // ép iOS nhận sự kiện cuộn
-        window.scrollTo(0, 1);
-        setTimeout(() => window.scrollTo(0, 0), 200);
-        auto.start();
-
-        // 🌟 Thỉnh thoảng tự bắn pháo bông (ngẫu nhiên 15–35 giây/lần)
-        const fire = () => {
-            setBoom(true);
-            setTimeout(() => setBoom(false), 1800);
-        };
-
-        const loop = setInterval(() => {
-            if (Math.random() < 0.4) { // 40% xác suất mỗi chu kỳ
-                fire();
-            }
-        }, 5000 + Math.random() * 10000); // 15–35s/lần
-
-        // bắn lần đầu ngay khi vào trang
-        setTimeout(fire, 3000);
-
-        return () => {
-            auto.stop();
-            clearInterval(loop);
-        };
-    }, []);
+    // useEffect(() => {
+    //     // Nếu vẫn muốn hack iOS address bar, bọc vào rAF để tránh repaint sớm
+    //     requestAnimationFrame(() => {
+    //         window.scrollTo(0, 1);
+    //         setTimeout(() => window.scrollTo(0, 0), 120);
+    //     });
+    //     auto.start();
+    //     return () => auto.stop();
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, []);
 
     return (
-    <div className="min-h-screen">
+    <div className="min-h-[100svh]" >
       <FallingPetals />
         {/*<Fireworks*/}
         {/*    show={boom}*/}

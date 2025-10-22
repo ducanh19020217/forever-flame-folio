@@ -5,7 +5,7 @@ import {Textarea} from "@/components/ui/textarea";
 import {useToast} from "@/hooks/use-toast";
 import {Clock, Heart, MessageCircle, User} from "lucide-react";
 
-const API_URL = "https://script.google.com/macros/s/AKfycbwzxHckMp_EAVQg-WMMhuM0GukBn-QcZRbk_jQEKuPri1nBPozII0qra0v1cJkex7zd/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwUEYpa23JpnYtNiFfdnUdxKJ8fsHj7Qw8aTq3JWm6WQbxjFcRai-Prv46ItSA9L4xH/exec";
 
 type WishRow = {
     name: string;
