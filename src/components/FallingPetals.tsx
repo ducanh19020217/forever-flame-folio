@@ -6,7 +6,7 @@ const FallingPetals = () => {
     >([]);
 
     useEffect(() => {
-        const shapes = ['petal', 'heart', 'flower'];
+        const shapes: Array<'petal' | 'heart' | 'flower'> = ['petal', 'heart', 'flower'];
         const petalArray = Array.from({ length: 25 }, (_, i) => ({
             id: i,
             left: Math.random() * 100,
