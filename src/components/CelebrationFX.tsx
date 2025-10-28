@@ -4,19 +4,20 @@ const CelebrationFX = () => {
   const [sparkles, setSparkles] = useState<Array<{ id: number; x: number; y: number; delay: number; duration: number }>>([]);
 
   useEffect(() => {
-    const sparkleArray = Array.from({ length: 20 }, (_, i) => ({
+    // Giảm số lượng sparkles xuống còn 6 để tinh tế hơn
+    const sparkleArray = Array.from({ length: 6 }, (_, i) => ({
       id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      delay: Math.random() * 3,
-      duration: 2 + Math.random() * 2,
+      x: 20 + Math.random() * 60, // Tập trung quanh giữa màn hình
+      y: 20 + Math.random() * 60,
+      delay: Math.random() * 4,
+      duration: 3 + Math.random() * 2, // Chậm hơn
     }));
     setSparkles(sparkleArray);
   }, []);
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden">
-      {/* Sparkle particles */}
+      {/* Sparkle particles - tinh tế, không nhấp nháy */}
       {sparkles.map((sparkle) => (
         <div
           key={sparkle.id}
@@ -28,65 +29,24 @@ const CelebrationFX = () => {
             animationDuration: `${sparkle.duration}s`,
           }}
         >
-          <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#ffd700] via-[#ffc0cb] to-[#fff]" />
+          <div className="w-1.5 h-1.5 rounded-full bg-primary/40" />
         </div>
       ))}
-
-      {/* Rotating glow rays */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rays-container">
-        <div className="absolute inset-0 ray ray-1"></div>
-        <div className="absolute inset-0 ray ray-2"></div>
-        <div className="absolute inset-0 ray ray-3"></div>
-      </div>
 
       <style>{`
         @keyframes sparkle-fade {
           0%, 100% {
             opacity: 0;
-            transform: scale(0) rotate(0deg);
+            transform: scale(0.8) translateY(0);
           }
           50% {
-            opacity: 1;
-            transform: scale(1.5) rotate(180deg);
-          }
-        }
-
-        @keyframes rotate-slow {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
+            opacity: 0.6;
+            transform: scale(1.2) translateY(-5px);
           }
         }
 
         .sparkle {
           animation: sparkle-fade infinite ease-in-out;
-        }
-
-        .rays-container {
-          animation: rotate-slow 30s linear infinite;
-          opacity: 0.15;
-        }
-
-        .ray {
-          background: conic-gradient(
-            from 0deg,
-            transparent 0deg,
-            rgba(255, 192, 203, 0.4) 10deg,
-            transparent 20deg,
-            transparent 340deg,
-            rgba(255, 192, 203, 0.4) 350deg,
-            transparent 360deg
-          );
-        }
-
-        .ray-2 {
-          transform: rotate(120deg);
-        }
-
-        .ray-3 {
-          transform: rotate(240deg);
         }
       `}</style>
     </div>

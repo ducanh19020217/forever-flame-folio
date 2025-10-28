@@ -22,20 +22,20 @@ const InvitationEnvelope = ({ guestName, onEnterWeddingPage, onStartMusic }: Inv
   };
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-[#fff7f8] via-[#fffafa] to-[#fff0f3] flex items-center justify-center p-4 overflow-hidden">
+    <div className="fixed inset-0 bg-gradient-romantic flex items-center justify-center p-4 overflow-hidden">
       {/* Celebration effects */}
       <CelebrationFX />
       <IntroFallingPetals />
       
-      {/* Decorative elements */}
-      <div className="absolute top-10 left-10 opacity-20 animate-pulse">
-        <Heart className="w-16 h-16 text-[#e8cfd4]" fill="currentColor" />
+      {/* Decorative elements - không pulse */}
+      <div className="absolute top-10 left-10 opacity-10">
+        <Heart className="w-16 h-16 text-primary/60" fill="currentColor" />
       </div>
-      <div className="absolute bottom-10 right-10 opacity-20 animate-pulse" style={{ animationDelay: '1s' }}>
-        <Heart className="w-20 h-20 text-[#e8cfd4]" fill="currentColor" />
+      <div className="absolute bottom-10 right-10 opacity-10">
+        <Heart className="w-20 h-20 text-primary/60" fill="currentColor" />
       </div>
-      <div className="absolute top-1/4 right-1/4 opacity-10 animate-pulse" style={{ animationDelay: '0.5s' }}>
-        <Heart className="w-12 h-12 text-[#e8cfd4]" fill="currentColor" />
+      <div className="absolute top-1/4 right-1/4 opacity-5">
+        <Heart className="w-12 h-12 text-primary/60" fill="currentColor" />
       </div>
 
       <div className="relative w-full max-w-md">
@@ -43,21 +43,17 @@ const InvitationEnvelope = ({ guestName, onEnterWeddingPage, onStartMusic }: Inv
         <div className="relative perspective-1000">
           {/* Envelope body */}
           <div
-            className={`relative bg-white border-2 border-[#e8cfd4] rounded-2xl transition-all duration-500 ${
+            className={`relative bg-card border-2 border-primary/20 rounded-2xl shadow-romantic transition-all duration-500 ${
               isOpened ? "opacity-0 scale-95" : "opacity-100 scale-100"
             }`}
             style={{ 
-              minHeight: "450px",
-              transformStyle: "preserve-3d",
-              boxShadow: isOpening 
-                ? "0 25px 50px -12px rgba(232, 207, 212, 0.25)" 
-                : "0 25px 50px -12px rgba(232, 207, 212, 0.25), 0 0 30px rgba(232, 207, 212, 0.4)",
-              animation: !isOpening ? "pulse-glow 2s ease-in-out infinite" : "none"
+              minHeight: "480px",
+              transformStyle: "preserve-3d"
             }}
           >
             {/* Envelope flap */}
             <div
-              className={`absolute top-0 left-0 right-0 h-32 bg-gradient-to-br from-[#f3d5dc] to-[#fce4ec] border-b-2 border-[#e8cfd4] rounded-t-2xl origin-top transition-transform duration-400 ease-out ${
+              className={`absolute top-0 left-0 right-0 h-32 bg-gradient-gold border-b-2 border-primary/30 rounded-t-2xl origin-top transition-transform duration-400 ease-out ${
                 isOpening ? "envelope-flap-open" : ""
               }`}
               style={{
@@ -66,25 +62,25 @@ const InvitationEnvelope = ({ guestName, onEnterWeddingPage, onStartMusic }: Inv
               }}
             >
               <div className="absolute inset-0 flex items-center justify-center pt-4">
-                <div className="w-12 h-12 rounded-full bg-[#e8cfd4]/30 flex items-center justify-center">
-                  <Heart className="w-6 h-6 text-[#d4a5b0]" fill="currentColor" />
+                <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Heart className="w-6 h-6 text-primary" fill="currentColor" />
                 </div>
               </div>
             </div>
 
             {/* Envelope content */}
-            <div className="relative pt-20 p-8 flex flex-col items-center text-center">
-              <p className="text-sm tracking-widest text-[#a88894] uppercase mb-4 font-light">
+            <div className="relative pt-24 p-8 flex flex-col items-center text-center">
+              <p className="text-xs tracking-[0.3em] text-muted-foreground uppercase mb-6 font-light">
                 Kính mời
               </p>
               
-              <h1 className="text-3xl md:text-4xl font-serif text-[#6b5b5f] mb-6 font-bold">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-foreground mb-8 font-bold leading-tight px-4">
                 {guestName}
               </h1>
 
-              <div className="mb-8">
-                <p className="text-sm text-[#a88894] mb-2">Thiệp cưới của</p>
-                <p className="text-2xl font-script text-[#d4a5b0] leading-relaxed">
+              <div className="mb-10">
+                <p className="text-sm text-muted-foreground mb-3">Thiệp cưới của</p>
+                <p className="text-3xl md:text-4xl font-script text-primary leading-relaxed">
                   Đức Ánh & Hà Phương
                 </p>
               </div>
@@ -92,7 +88,7 @@ const InvitationEnvelope = ({ guestName, onEnterWeddingPage, onStartMusic }: Inv
               {!isOpening && (
                 <button
                   onClick={handleOpenEnvelope}
-                  className="px-8 py-3 bg-gradient-to-r from-[#e8cfd4] to-[#f3d5dc] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 font-medium tracking-wide animate-pulse"
+                  className="px-10 py-4 bg-gradient-gold text-primary-foreground rounded-full shadow-romantic hover:shadow-xl transition-all duration-300 hover:scale-105 font-medium tracking-wide text-lg"
                 >
                   Mở thư & Bắt đầu ✉
                 </button>
@@ -108,37 +104,37 @@ const InvitationEnvelope = ({ guestName, onEnterWeddingPage, onStartMusic }: Inv
                 : "opacity-0 translate-y-8 pointer-events-none"
             }`}
           >
-            <div className="bg-white border-2 border-[#f3d5dc] rounded-2xl shadow-2xl p-8 h-full flex flex-col justify-center">
+            <div className="bg-card border-2 border-primary/20 rounded-2xl shadow-romantic p-8 h-full flex flex-col justify-center">
               <div className="text-center space-y-6">
-                <Heart className="w-12 h-12 text-[#e8cfd4] mx-auto mb-4" fill="currentColor" />
+                <Heart className="w-12 h-12 text-primary mx-auto mb-4" fill="currentColor" />
                 
-                <h2 className="text-xl text-[#6b5b5f] leading-relaxed">
+                <h2 className="text-xl text-foreground leading-relaxed">
                   Trân trọng kính mời<br />
-                  <span className="text-2xl font-semibold text-[#d4a5b0]">{guestName}</span>
+                  <span className="text-3xl font-semibold text-primary mt-2 block">{guestName}</span>
                 </h2>
 
-                <p className="text-base text-[#a88894] leading-relaxed">
+                <p className="text-base text-muted-foreground leading-relaxed">
                   Đến dự lễ thành hôn của
                 </p>
 
                 <div className="space-y-2">
-                  <p className="text-3xl font-script text-[#d4a5b0]">Đức Ánh</p>
-                  <Heart className="w-6 h-6 text-[#e8cfd4] mx-auto" fill="currentColor" />
-                  <p className="text-3xl font-script text-[#d4a5b0]">Hà Phương</p>
+                  <p className="text-3xl font-script text-primary">Đức Ánh</p>
+                  <Heart className="w-6 h-6 text-primary mx-auto" fill="currentColor" />
+                  <p className="text-3xl font-script text-primary">Hà Phương</p>
                 </div>
 
-                <div className="border-t border-[#f3d5dc] pt-6 space-y-2">
-                  <p className="text-sm text-[#6b5b5f] font-medium">
+                <div className="border-t border-border pt-6 space-y-2">
+                  <p className="text-sm text-foreground font-medium">
                     Vào lúc 10:00 | 07.12.2025
                   </p>
-                  <p className="text-sm text-[#a88894]">
+                  <p className="text-sm text-muted-foreground">
                     Tại nhà hàng tiệc cưới
                   </p>
                 </div>
 
                 <button
                   onClick={onEnterWeddingPage}
-                  className="mt-8 px-10 py-4 bg-gradient-to-r from-[#d4a5b0] to-[#e8cfd4] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 font-medium tracking-wide text-lg animate-pulse"
+                  className="mt-8 px-10 py-4 bg-gradient-gold text-primary-foreground rounded-full shadow-romantic hover:shadow-xl transition-all duration-300 hover:scale-105 font-medium tracking-wide text-lg"
                 >
                   Vào thiệp mời →
                 </button>
@@ -158,22 +154,13 @@ const InvitationEnvelope = ({ guestName, onEnterWeddingPage, onStartMusic }: Inv
           transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes pulse-glow {
-          0%, 100% {
-            box-shadow: 0 25px 50px -12px rgba(232, 207, 212, 0.25), 0 0 30px rgba(232, 207, 212, 0.3);
-          }
-          50% {
-            box-shadow: 0 25px 50px -12px rgba(232, 207, 212, 0.35), 0 0 40px rgba(232, 207, 212, 0.5);
-          }
-        }
-
         @font-face {
           font-family: 'Script';
-          src: local('Brush Script MT'), local('Lucida Handwriting'), local('Apple Chancery');
+          src: local('Brush Script MT'), local('Lucida Handwriting'), local('Apple Chancery'), local('Segoe Script');
         }
 
         .font-script {
-          font-family: 'Script', cursive, serif;
+          font-family: 'Script', 'Playfair Display', cursive, serif;
         }
       `}</style>
     </div>
