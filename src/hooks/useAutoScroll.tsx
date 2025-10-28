@@ -1,16 +1,15 @@
-// useAutoScroll.ts
 import { useEffect, useRef, useState, RefObject, useCallback } from "react";
 
 type BottomStrategy = "stop" | "loop" | "bounce";
 
 interface AutoScrollOptions {
-    speed?: number;                 // px/s
-    resumeDelayMs?: number;         // thời gian tạm dừng sau tương tác user
+    speed?: number;
+    resumeDelayMs?: number;
     enabled?: boolean;
-    containerRef?: RefObject<HTMLElement>; // nếu không truyền -> cuộn window
-    bottomStrategy?: BottomStrategy; // dừng | lặp từ đầu | bật nảy
-    respectReducedMotion?: boolean;  // mặc định true
-    maxFPS?: number | null;          // ví dụ 60; null = không giới hạn
+    containerRef?: RefObject<HTMLElement>;
+    bottomStrategy?: BottomStrategy;
+    respectReducedMotion?: boolean;
+    maxFPS?: number | null;
 }
 
 export const useAutoScroll = ({
@@ -22,165 +21,106 @@ export const useAutoScroll = ({
                                   respectReducedMotion = true,
                                   maxFPS = 60,
                               }: AutoScrollOptions = {}) => {
-    const [isActive, setIsActive] = useState<boolean>(enabled);
-
-    // --- refs nội bộ (không gây re-render) ---
+    const [isActive, setIsActive] = useState(enabled);
     const speedRef = useRef(speed);
     const dirRef = useRef<1 | -1>(1);
     const rafRef = useRef<number | null>(null);
     const lastTsRef = useRef<number>(0);
-    const accRef = useRef<number>(0);               // tích lũy sub-pixel
+    const accRef = useRef<number>(0);
     const pausedUntilRef = useRef<number>(0);
     const resumeTimerRef = useRef<number | null>(null);
-    const programmaticRef = useRef<boolean>(false);
-    const userIntentUntilRef = useRef<number>(0);
-    const frameMinInterval = maxFPS ? (1000 / maxFPS) : 0;
-
-    // --- chống stale state & kiểm soát resume ---
-    const isActiveRef = useRef<boolean>(isActive);
     const autoPausedRef = useRef<boolean>(false);
+    const isActiveRef = useRef<boolean>(isActive);
+    const warmupRef = useRef<number>(0);
+    const frameMinInterval = maxFPS ? 1000 / maxFPS : 0;
+
     useEffect(() => { isActiveRef.current = isActive; }, [isActive]);
-
-    // --- chống flicker: tránh ghi trùng vị trí ---
-    const lastWriteYRef = useRef<number>(-1);
-
     const now = () => performance.now();
     const isWindowMode = !containerRef?.current;
 
-    // Đọc vị trí hiện tại
-    const readTop = () => {
-        if (!isWindowMode) return containerRef!.current!.scrollTop;
-        return (
-            window.pageYOffset ??
-            document.documentElement.scrollTop ??
-            document.body.scrollTop ??
-            0
-        );
-    };
+    const readTop = () =>
+        !isWindowMode
+            ? containerRef!.current!.scrollTop
+            : window.scrollY || document.documentElement.scrollTop || 0;
 
-    // Đọc kích thước scroll/viewport
     const readDims = () => {
         if (!isWindowMode) {
             const el = containerRef!.current!;
             return { scrollHeight: el.scrollHeight, clientHeight: el.clientHeight };
         }
         const docEl = document.documentElement;
-        const body = document.body;
-        const scrollHeight = Math.max(docEl?.scrollHeight || 0, body?.scrollHeight || 0);
-        const clientHeight = window.innerHeight; // iOS thay đổi khi address bar co/giãn
-        return { scrollHeight, clientHeight };
+        const scrollHeight = Math.max(docEl.scrollHeight, document.body.scrollHeight);
+        return { scrollHeight, clientHeight: window.innerHeight };
     };
 
-    // Cuộn tới vị trí y (tránh ghi trùng để không repaint vô ích)
-    const scrollToY = (y: number) => {
-        const cur = readTop();
-        if (Math.round(cur) === Math.round(y)) return; // 🚫 tránh flicker
-        programmaticRef.current = true;
-        if (!isWindowMode) containerRef!.current!.scrollTop = y;
-        else window.scrollTo(0, y);
-        lastWriteYRef.current = y;
-        queueMicrotask(() => { programmaticRef.current = false; });
+    // ✅ tránh repaint mạnh
+    const scrollByInt = (dy: number) => {
+        if (dy === 0) return;
+        if (!isWindowMode) containerRef!.current!.scrollTop += dy;
+        else window.scrollBy(0, dy);
     };
 
-    const scrollByInt = (dyInt: number) => {
-        if (dyInt === 0) return; // không ghi nếu không cần
-        scrollToY(readTop() + dyInt);
-    };
-
-    // Đồng bộ tốc độ runtime
     useEffect(() => { speedRef.current = Math.max(0, speed); }, [speed]);
 
-    // Resume sau khi user dừng tương tác
     const requestResume = useCallback(() => {
         if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
         resumeTimerRef.current = window.setTimeout(() => {
             pausedUntilRef.current = 0;
             if (!enabled) return;
-
             if (autoPausedRef.current && !isActiveRef.current) {
-                // reset “đà” để frame đầu mượt, tránh nhảy 1px
                 accRef.current = 0;
-                lastWriteYRef.current = -1;
-
+                warmupRef.current = 0; // reset warm-up
                 setIsActive(true);
                 autoPausedRef.current = false;
                 tick();
             }
         }, resumeDelayMs) as unknown as number;
-    }, [resumeDelayMs, enabled]); // không phụ thuộc isActive (tránh stale)
+    }, [resumeDelayMs, enabled]);
 
-    // Pause do user (wheel/touch/pointer/keyboard)
     const pauseForUser = useCallback(() => {
         if (isActiveRef.current) setIsActive(false);
         autoPausedRef.current = true;
-        accRef.current = 0;            // reset đà để resume mượt
-        lastWriteYRef.current = -1;
+        accRef.current = 0;
         pausedUntilRef.current = now() + resumeDelayMs;
         requestResume();
     }, [requestResume, resumeDelayMs]);
 
-    const markUserIntent = () => { userIntentUntilRef.current = now() + 120; };
-
-    // Listeners: pause theo intent, không pause theo event "scroll"
     useEffect(() => {
         if (!enabled) return;
-
-        const onWheel = () => { markUserIntent(); pauseForUser(); };
-        const onTouchStart = () => { markUserIntent(); pauseForUser(); };
-        const onTouchMove = () => { markUserIntent(); pauseForUser(); };
-        const onPointerDown = () => { markUserIntent(); pauseForUser(); };
+        const onWheel = pauseForUser;
+        const onTouchStart = pauseForUser;
+        const onPointerDown = pauseForUser;
         const onKeyDown = (e: KeyboardEvent) => {
-            if (["ArrowUp","ArrowDown","PageUp","PageDown","Home","End"," ","Space"].includes(e.key)) {
-                markUserIntent(); pauseForUser();
-            }
+            if (["ArrowUp","ArrowDown","PageUp","PageDown","Home","End"," ","Space"].includes(e.key))
+                pauseForUser();
         };
-        const onScroll = () => { /* cố ý không pause theo scroll để tránh giật */ };
-
         const el = isWindowMode ? window : containerRef!.current!;
         el.addEventListener("wheel", onWheel, { passive: true });
         el.addEventListener("touchstart", onTouchStart, { passive: true });
-        el.addEventListener("touchmove", onTouchMove, { passive: true });
         el.addEventListener("pointerdown", onPointerDown, { passive: true });
-        el.addEventListener("scroll", onScroll, { passive: true });
-        window.addEventListener("keydown", onKeyDown); // không dùng passive cho keydown
-
+        window.addEventListener("keydown", onKeyDown);
         return () => {
             el.removeEventListener("wheel", onWheel);
             el.removeEventListener("touchstart", onTouchStart);
-            el.removeEventListener("touchmove", onTouchMove);
             el.removeEventListener("pointerdown", onPointerDown);
-            el.removeEventListener("scroll", onScroll);
             window.removeEventListener("keydown", onKeyDown);
             if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
         };
     }, [enabled, pauseForUser, isWindowMode, containerRef]);
 
-    // Visibility: khi tab quay lại, resume mềm
-    useEffect(() => {
-        if (!enabled) return;
-        const onVis = () => {
-            if (document.visibilityState === "hidden") {
-                if (isActiveRef.current) setIsActive(false);
-            } else {
-                pausedUntilRef.current = now() + 250;
-                requestResume();
-            }
-        };
-        document.addEventListener("visibilitychange", onVis);
-        return () => document.removeEventListener("visibilitychange", onVis);
-    }, [enabled, requestResume]);
-
-    // Vòng lặp rAF
+    // 🎬 loop chính
     const tick = useCallback(() => {
-        if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
         lastTsRef.current = 0;
+        warmupRef.current = 0;
 
         const frame = (ts: number) => {
             if (!isActiveRef.current || !enabled) return;
-
-            if (respectReducedMotion && window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) {
+            if (
+                respectReducedMotion &&
+                window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
+            )
                 return;
-            }
 
             if (lastTsRef.current === 0) {
                 lastTsRef.current = ts;
@@ -194,7 +134,7 @@ export const useAutoScroll = ({
                 return;
             }
 
-            const dt = Math.min(dtMs / 1000, 0.05); // clamp để tránh nhảy vọt
+            const dt = Math.min(dtMs / 1000, 0.05);
             lastTsRef.current = ts;
 
             if (pausedUntilRef.current && now() < pausedUntilRef.current) {
@@ -206,40 +146,29 @@ export const useAutoScroll = ({
             const maxScroll = Math.max(0, scrollHeight - clientHeight);
             const y = readTop();
 
-            // tích lũy + chỉ cuộn số nguyên px
-            accRef.current += speedRef.current * dt * dirRef.current;
+            // 🌸 warm-up giảm hiện tượng “giật trắng” frame đầu
+            const warmup = Math.min(1, (warmupRef.current += dt * 2)); // 0 → 1 trong 0.5s
+            const effectiveSpeed = speedRef.current * (0.3 + 0.7 * warmup);
+
+            accRef.current += effectiveSpeed * dt * dirRef.current;
             const deltaInt = accRef.current > 0 ? Math.floor(accRef.current) : Math.ceil(accRef.current);
             accRef.current -= deltaInt;
 
-            // tolerance lớn hơn cho iOS (address bar co/giãn)
-            const TOL = 6;
-            const atBottom = y >= maxScroll - TOL;
-            const atTop = y <= TOL;
+            const atBottom = y >= maxScroll - 2;
+            const atTop = y <= 2;
 
-            // Chạm đáy
             if (dirRef.current === 1 && atBottom) {
                 if (bottomStrategy === "stop") {
-                    // hạ cánh mềm: đảm bảo chốt về đúng maxScroll rồi mới tắt ở frame sau
-                    if (Math.round(y) !== Math.round(maxScroll)) scrollToY(maxScroll);
-                    rafRef.current = requestAnimationFrame(() => {
-                        setIsActive(false);
-                    });
+                    setIsActive(false);
                     return;
                 } else if (bottomStrategy === "loop") {
-                    scrollToY(0);
-                } else {
-                    dirRef.current = -1; // bounce
-                }
-            }
-            // Chạm đỉnh khi đang đi lên
-            else if (dirRef.current === -1 && atTop) {
+                    if (!isWindowMode) containerRef!.current!.scrollTop = 0;
+                    else window.scrollTo({ top: 0, behavior: "instant" as any });
+                } else dirRef.current = -1;
+            } else if (dirRef.current === -1 && atTop) {
                 if (bottomStrategy === "bounce") dirRef.current = 1;
-            }
-            // Bình thường thì cuộn
-            else {
-                if (deltaInt !== 0) {          // tránh ghi trùng → giảm flicker
-                    scrollByInt(deltaInt);
-                }
+            } else if (deltaInt !== 0) {
+                scrollByInt(deltaInt);
             }
 
             rafRef.current = requestAnimationFrame(frame);
@@ -248,30 +177,26 @@ export const useAutoScroll = ({
         rafRef.current = requestAnimationFrame(frame);
     }, [enabled, bottomStrategy, respectReducedMotion, frameMinInterval]);
 
-    // Đồng bộ enabled -> isActive và kick loop
     useEffect(() => {
         setIsActive(enabled);
         isActiveRef.current = enabled;
         if (enabled) tick();
         else if (rafRef.current) cancelAnimationFrame(rafRef.current);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [enabled]);
+    }, [enabled, tick]);
 
-    // Public API
     const start = useCallback(() => {
         if (!isActiveRef.current) {
             setIsActive(true);
             isActiveRef.current = true;
-            // reset đà khi start thủ công để frame đầu mượt
             accRef.current = 0;
-            lastWriteYRef.current = -1;
+            warmupRef.current = 0;
             tick();
         }
     }, [tick]);
 
     const stop = useCallback(() => {
         if (isActiveRef.current) setIsActive(false);
-        autoPausedRef.current = false;   // stop thủ công → không auto resume
+        autoPausedRef.current = false;
         isActiveRef.current = false;
         if (rafRef.current) cancelAnimationFrame(rafRef.current);
     }, []);

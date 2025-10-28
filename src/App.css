@@ -192,3 +192,38 @@ html, body {
     contain: paint;
 }
 
+.ant-timeline-item-head {
+    width: 10px !important;
+    height: 10px !important;
+    border-width: 2px !important;
+    top: -5px !important;
+}
+.ant-timeline-item-tail {
+    border-left-width: 2px !important;
+    opacity: 0.4;
+}
+
+.custom-timeline.ant-timeline.ant-timeline-right .ant-timeline-item-label {
+    width: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+    padding-left: 8px !important;
+    text-align: left !important; /* căn trái giờ */
+}
+
+.custom-timeline.ant-timeline.ant-timeline-right .ant-timeline-item-content {
+    text-align: right !important; /* căn phải nội dung */
+    padding-right: 0 !important;
+    color: #7a2b38; /* tone chủ đạo */
+}
+
+.custom-timeline .ant-timeline-item-head {
+    border-color: #b44a5c !important;
+    background-color: #fff;
+}
+
+.custom-timeline .ant-timeline-item-tail {
+    border-left: 2px solid #e6b6bd !important;
+    opacity: 0.5;
+}
+

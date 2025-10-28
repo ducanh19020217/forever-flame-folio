@@ -12,6 +12,7 @@ import MusicPlayer from "@/components/MusicPlayer";
 import FallingPetals from "@/components/FallingPetals";
 import { useAutoScroll } from "@/hooks/useAutoScroll";
 import { useEffect } from "react";
+import {brideShortName, groomShortName, quote, weddingDate, weddingTime} from "@/config/weddingConfig.ts";
 
 interface WeddingContentProps {
   autoPlayMusic?: boolean;
@@ -32,25 +33,23 @@ const WeddingContent = ({ autoPlayMusic = false }: WeddingContentProps) => {
   });
 
   useEffect(() => {
-    // Auto scroll logic remains unchanged
-    // auto.start();
-    // return () => auto.stop();
-  }, []);
+      console.log('autoPlayMusic', autoPlayMusic)
+  }, [autoPlayMusic]);
 
   return (
     <div className="min-h-[100svh]">
       <FallingPetals />
       <Navigation />
       <Hero
-        brideName="Hà Phương"
-        groomName="Đức Ánh"
-        weddingDate="07.12.2025"
-        quote="Tình yêu là hành trình đẹp nhất của cuộc đời"
+        brideName={brideShortName}
+        groomName={groomShortName}
+        weddingDate={weddingDate}
+        quote={quote}
       />
       <Timeline />
       <Gallery />
       <WeddingDetails />
-      <Countdown weddingDate="2025-12-07T10:00:00" />
+      <Countdown weddingDate={weddingTime} />
       <RSVP />
       <Guestbook />
       <GiftSection />
