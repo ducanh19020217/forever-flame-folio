@@ -62,25 +62,21 @@ export default function MusicPlayer({ autoPlay = false }: MusicPlayerProps) {
         };
     }, []);
 
-    // Auto play if requested
     useEffect(() => {
-        if (autoPlay && !autoPlayAttempted.current && isLoaded) {
-            autoPlayAttempted.current = true;
-            const tryAutoPlay = async () => {
-                const a = audioRef.current;
-                if (!a) return;
+        if (autoPlay && isLoaded) {
+            const a = audioRef.current;
+            if (!a) return;
+            (async () => {
                 try {
-                    await unlockAudio();
                     if (!a.src) a.src = SAFE_AUDIO_URL;
                     await a.play();
                     setIsPlaying(true);
                     setShowPrompt(false);
                 } catch (err) {
-                    console.log("Auto-play blocked, user interaction needed");
+                    console.warn("Autoplay blocked:", err);
                     setShowPrompt(true);
                 }
-            };
-            tryAutoPlay();
+            })();
         }
     }, [autoPlay, isLoaded]);
 
@@ -114,20 +110,20 @@ export default function MusicPlayer({ autoPlay = false }: MusicPlayerProps) {
             <audio ref={audioRef} src={SAFE_AUDIO_URL} preload="auto" loop />
 
             {/* Prompt bật nhạc (không phụ thuộc isLoaded để tránh “mất” trên 1 số trình duyệt) */}
-            {showPrompt && (
-                <div
-                    className="fixed z-[99999] bg-white text-slate-700 rounded-xl shadow-2xl px-4 py-3"
-                    style={{
-                        top: `calc(env(safe-area-inset-top, 0px) + 4rem)`,
-                        right: `calc(env(safe-area-inset-right, 0px) + 1rem)`,
-                    }}
-                >
-                    <p className="font-medium mb-2">🎵 Nhấn để bật nhạc cho không khí thêm lãng mạn nhé!</p>
-                    <Button onClick={togglePlay} className="bg-pink-500 hover:bg-pink-600 text-white">
-                        {isPlaying ? "Tắt nhạc" : "Bật nhạc"}
-                    </Button>
-                </div>
-            )}
+            {/*{showPrompt && (*/}
+            {/*    <div*/}
+            {/*        className="fixed z-[99999] bg-white text-slate-700 rounded-xl shadow-2xl px-4 py-3"*/}
+            {/*        style={{*/}
+            {/*            top: `calc(env(safe-area-inset-top, 0px) + 4rem)`,*/}
+            {/*            right: `calc(env(safe-area-inset-right, 0px) + 1rem)`,*/}
+            {/*        }}*/}
+            {/*    >*/}
+            {/*        <p className="font-medium mb-2">🎵 Nhấn để bật nhạc cho không khí thêm lãng mạn nhé!</p>*/}
+            {/*        <Button onClick={togglePlay} className="bg-pink-500 hover:bg-pink-600 text-white">*/}
+            {/*            {isPlaying ? "Tắt nhạc" : "Bật nhạc"}*/}
+            {/*        </Button>*/}
+            {/*    </div>*/}
+            {/*)}*/}
 
             {/* Nút nổi: chỉ Tailwind utility, z-index rất cao, safe-area inline */}
             <div

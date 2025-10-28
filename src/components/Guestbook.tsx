@@ -64,7 +64,6 @@ const Guestbook = () => {
                 method: "GET",
             });
             const json: ApiGetResponse = await res.json();
-            console.log('json', json)
 
             const list = json.data.map(toGuestMessage);
             setTotalPages(json.totalPages);
@@ -155,10 +154,6 @@ const Guestbook = () => {
 
     // tiện cho UI
     const canLoadMore = useMemo(() => page < totalPages, [page, totalPages]);
-
-    useEffect(() => {
-        console.log(messages)
-    }, [messages]);
 
     return (
         <section id="guestbook" className="section-spacing px-4 bg-muted/30">

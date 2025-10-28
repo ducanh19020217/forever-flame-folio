@@ -1,6 +1,14 @@
 import { Gift, CreditCard } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import {
+    brideBank, brideBankAccount,
+    brideFullName,
+    brideShortName,
+    groomBank, groomBankAccount,
+    groomFullName,
+    groomShortName
+} from "@/config/weddingConfig.ts";
 
 const GiftSection = () => {
     const BankCard = ({
@@ -28,7 +36,7 @@ const GiftSection = () => {
             <div
                 ref={ref}
                 className={[
-                    "transition-all duration-700 transform-gpu will-change-transform",
+                    "transition-opacity transition-transform duration-700 ease-out",
                     isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6",
                 ].join(" ")}
                 style={{ transitionDelay: `${delay}s` }}
@@ -75,7 +83,17 @@ const GiftSection = () => {
                             <img
                                 src={qrData}
                                 alt={`QR Code ${side === "left" ? "Chú Rể" : "Cô Dâu"}`}
+                                width={200}
+                                height={200}
+                                decoding="sync"
+                                loading="eager"
                                 className="w-full h-full object-contain transition-transform duration-300 hover:scale-110"
+                                style={{
+                                    transform: "translateZ(0)",
+                                    backfaceVisibility: "hidden",
+                                    willChange: "transform",
+                                    contain: "paint layout style",
+                                }}
                             />
                         </div>
                         <p className="text-sm text-muted-foreground mt-2 text-center lg:text-left">
@@ -104,21 +122,21 @@ const GiftSection = () => {
                 <div className="grid md:grid-cols-2 gap-6 lg:gap-10 max-w-5xl mx-auto items-start justify-center">
                     <BankCard
                         side="left"
-                        name="Đức Ánh"
-                        fullName="DAM DUC ANH"
-                        bank="Vietcombank"
-                        account="1234567890"
-                        accountName="DAM DUC ANH"
+                        name={groomShortName}
+                        fullName={groomFullName}
+                        bank={groomBank}
+                        account={groomBankAccount}
+                        accountName={groomFullName}
                         qrData="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Bank:Vietcombank|Account:1234567890|Name:NGUYEN_DUKE_ANH"
-                        delay={0}
+                        delay={0.1}
                     />
                     <BankCard
                         side="right"
-                        name="Hà Phương"
-                        fullName="BUI THI HA PHUONG"
-                        bank="Techcombank"
-                        account="0987654321"
-                        accountName="BUI THI HA PHUONG"
+                        name={brideShortName}
+                        fullName={brideFullName}
+                        bank={brideBank}
+                        account={brideBankAccount}
+                        accountName={brideFullName}
                         qrData="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Bank:Vietcombank|Account:1234567890|Name:NGUYEN_DUKE_ANH"
                         delay={0.1}
                     />
