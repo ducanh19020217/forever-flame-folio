@@ -1,17 +1,21 @@
 import { useState } from "react";
 import { Heart } from "lucide-react";
+import CelebrationFX from "./CelebrationFX";
+import IntroFallingPetals from "./IntroFallingPetals";
 
 interface InvitationEnvelopeProps {
   guestName: string;
   onEnterWeddingPage: () => void;
+  onStartMusic: () => void;
 }
 
-const InvitationEnvelope = ({ guestName, onEnterWeddingPage }: InvitationEnvelopeProps) => {
+const InvitationEnvelope = ({ guestName, onEnterWeddingPage, onStartMusic }: InvitationEnvelopeProps) => {
   const [isOpening, setIsOpening] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
 
   const handleOpenEnvelope = () => {
     setIsOpening(true);
+    onStartMusic(); // Trigger music immediately
     setTimeout(() => {
       setIsOpened(true);
     }, 400);
@@ -19,14 +23,18 @@ const InvitationEnvelope = ({ guestName, onEnterWeddingPage }: InvitationEnvelop
 
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-[#fff7f8] via-[#fffafa] to-[#fff0f3] flex items-center justify-center p-4 overflow-hidden">
+      {/* Celebration effects */}
+      <CelebrationFX />
+      <IntroFallingPetals />
+      
       {/* Decorative elements */}
-      <div className="absolute top-10 left-10 opacity-20">
+      <div className="absolute top-10 left-10 opacity-20 animate-pulse">
         <Heart className="w-16 h-16 text-[#e8cfd4]" fill="currentColor" />
       </div>
-      <div className="absolute bottom-10 right-10 opacity-20">
+      <div className="absolute bottom-10 right-10 opacity-20 animate-pulse" style={{ animationDelay: '1s' }}>
         <Heart className="w-20 h-20 text-[#e8cfd4]" fill="currentColor" />
       </div>
-      <div className="absolute top-1/4 right-1/4 opacity-10">
+      <div className="absolute top-1/4 right-1/4 opacity-10 animate-pulse" style={{ animationDelay: '0.5s' }}>
         <Heart className="w-12 h-12 text-[#e8cfd4]" fill="currentColor" />
       </div>
 
@@ -35,12 +43,16 @@ const InvitationEnvelope = ({ guestName, onEnterWeddingPage }: InvitationEnvelop
         <div className="relative perspective-1000">
           {/* Envelope body */}
           <div
-            className={`relative bg-white border-2 border-[#e8cfd4] rounded-2xl shadow-2xl transition-all duration-500 ${
+            className={`relative bg-white border-2 border-[#e8cfd4] rounded-2xl transition-all duration-500 ${
               isOpened ? "opacity-0 scale-95" : "opacity-100 scale-100"
             }`}
             style={{ 
               minHeight: "450px",
-              transformStyle: "preserve-3d"
+              transformStyle: "preserve-3d",
+              boxShadow: isOpening 
+                ? "0 25px 50px -12px rgba(232, 207, 212, 0.25)" 
+                : "0 25px 50px -12px rgba(232, 207, 212, 0.25), 0 0 30px rgba(232, 207, 212, 0.4)",
+              animation: !isOpening ? "pulse-glow 2s ease-in-out infinite" : "none"
             }}
           >
             {/* Envelope flap */}
@@ -80,9 +92,9 @@ const InvitationEnvelope = ({ guestName, onEnterWeddingPage }: InvitationEnvelop
               {!isOpening && (
                 <button
                   onClick={handleOpenEnvelope}
-                  className="px-8 py-3 bg-gradient-to-r from-[#e8cfd4] to-[#f3d5dc] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 font-medium tracking-wide"
+                  className="px-8 py-3 bg-gradient-to-r from-[#e8cfd4] to-[#f3d5dc] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 font-medium tracking-wide animate-pulse"
                 >
-                  Mở thư ✉
+                  Mở thư & Bắt đầu ✉
                 </button>
               )}
             </div>
@@ -126,9 +138,9 @@ const InvitationEnvelope = ({ guestName, onEnterWeddingPage }: InvitationEnvelop
 
                 <button
                   onClick={onEnterWeddingPage}
-                  className="mt-8 px-10 py-4 bg-gradient-to-r from-[#d4a5b0] to-[#e8cfd4] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 font-medium tracking-wide text-lg"
+                  className="mt-8 px-10 py-4 bg-gradient-to-r from-[#d4a5b0] to-[#e8cfd4] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 font-medium tracking-wide text-lg animate-pulse"
                 >
-                  Vào thiệp mời
+                  Vào thiệp mời →
                 </button>
               </div>
             </div>
@@ -143,6 +155,16 @@ const InvitationEnvelope = ({ guestName, onEnterWeddingPage }: InvitationEnvelop
         
         .envelope-flap-open {
           transform: rotateX(-130deg);
+          transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes pulse-glow {
+          0%, 100% {
+            box-shadow: 0 25px 50px -12px rgba(232, 207, 212, 0.25), 0 0 30px rgba(232, 207, 212, 0.3);
+          }
+          50% {
+            box-shadow: 0 25px 50px -12px rgba(232, 207, 212, 0.35), 0 0 40px rgba(232, 207, 212, 0.5);
+          }
         }
 
         @font-face {

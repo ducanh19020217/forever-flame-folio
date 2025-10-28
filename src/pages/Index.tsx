@@ -4,6 +4,7 @@ import WeddingContent from "@/components/WeddingContent";
 
 const Index = () => {
   const [showWeddingContent, setShowWeddingContent] = useState(false);
+  const [shouldPlayMusic, setShouldPlayMusic] = useState(false);
   const [guestName, setGuestName] = useState("Quý khách");
 
   useEffect(() => {
@@ -20,11 +21,12 @@ const Index = () => {
       <InvitationEnvelope
         guestName={guestName}
         onEnterWeddingPage={() => setShowWeddingContent(true)}
+        onStartMusic={() => setShouldPlayMusic(true)}
       />
     );
   }
 
-  return <WeddingContent />;
+  return <WeddingContent autoPlayMusic={shouldPlayMusic} />;
 };
 
 export default Index;

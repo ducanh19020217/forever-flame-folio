@@ -13,7 +13,11 @@ import FallingPetals from "@/components/FallingPetals";
 import { useAutoScroll } from "@/hooks/useAutoScroll";
 import { useEffect } from "react";
 
-const WeddingContent = () => {
+interface WeddingContentProps {
+  autoPlayMusic?: boolean;
+}
+
+const WeddingContent = ({ autoPlayMusic = false }: WeddingContentProps) => {
   const isiOSSafari = typeof navigator !== "undefined"
     && /iPhone|iPad|iPod/.test(navigator.userAgent)
     && /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -51,7 +55,7 @@ const WeddingContent = () => {
       <Guestbook />
       <GiftSection />
       <Footer />
-      <MusicPlayer />
+      <MusicPlayer autoPlay={autoPlayMusic} />
     </div>
   );
 };

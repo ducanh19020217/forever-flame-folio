@@ -12,13 +12,18 @@ function useIsClient() {
     return ready;
 }
 
-export default function MusicPlayer() {
+interface MusicPlayerProps {
+    autoPlay?: boolean;
+}
+
+export default function MusicPlayer({ autoPlay = false }: MusicPlayerProps) {
     const isClient = useIsClient();
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [showPrompt, setShowPrompt] = useState(true);
+    const [showPrompt, setShowPrompt] = useState(!autoPlay);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const unlockedRef = useRef(false);
+    const autoPlayAttempted = useRef(false);
 
     // iOS unlock: gọi play() trong một gesture rồi pause ngay
     const unlockAudio = async () => {
@@ -56,6 +61,28 @@ export default function MusicPlayer() {
             window.removeEventListener("touchstart", touchUnlock);
         };
     }, []);
+
+    // Auto play if requested
+    useEffect(() => {
+        if (autoPlay && !autoPlayAttempted.current && isLoaded) {
+            autoPlayAttempted.current = true;
+            const tryAutoPlay = async () => {
+                const a = audioRef.current;
+                if (!a) return;
+                try {
+                    await unlockAudio();
+                    if (!a.src) a.src = SAFE_AUDIO_URL;
+                    await a.play();
+                    setIsPlaying(true);
+                    setShowPrompt(false);
+                } catch (err) {
+                    console.log("Auto-play blocked, user interaction needed");
+                    setShowPrompt(true);
+                }
+            };
+            tryAutoPlay();
+        }
+    }, [autoPlay, isLoaded]);
 
     const togglePlay = async () => {
         const a = audioRef.current;
