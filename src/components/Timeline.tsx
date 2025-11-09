@@ -1,6 +1,9 @@
 import {Calendar, Heart, Sparkles, Church} from "lucide-react";
 import timeline1 from "@/assets/timeline-1.jpg";
-import timeline2 from "@/assets/timeline-2.jpg";
+import T2 from "@/assets/T2.jpg";
+import T3 from "@/assets/T3.jpg";
+import A1 from "@/assets/A1.jpg";
+import A9 from "@/assets/A9.jpg";
 import timeline3 from "@/assets/timeline-3.jpg";
 import timeline4 from "@/assets/timeline-4.jpg";
 import {useIntersectionAppear} from "@/hooks/useIntersectionAppear";
@@ -28,7 +31,7 @@ const milestones: Milestone[] = [
         date: "Năm 2017",
         description:
             "Sau năm lớp 12, sau những năm tháng đồng hành cùng nhau trên ghế nhà trường, tình cảm dần lớn lên, từ bạn thân trở thành người thương. Đó là khởi đầu cho hành trình yêu thương sẽ là dài nhất cuộc đời.",
-        image: timeline2,
+        image: T2,
         icon: <Heart className="w-6 h-6" />,
     },
     {
@@ -36,7 +39,7 @@ const milestones: Milestone[] = [
         date: "2018 – 2024",
         description:
             "Suốt những năm tháng trưởng thành, chúng tôi cùng nhau đi qua biết bao chông gai, thăng trầm, vui buồn. Có lúc mệt mỏi, có khi xa cách, nhưng tình yêu vẫn luôn đủ lớn để giữ chúng tôi bên nhau. Tình cảm ấy được tôi luyện qua thời gian, càng ngày càng vững bền và sâu sắc hơn.",
-        image: timeline3,
+        image: T3,
         icon: <Sparkles className="w-6 h-6" />,
     },
     {
@@ -52,7 +55,7 @@ const milestones: Milestone[] = [
         date: "26 Tháng 11, 2025",
         description:
             "Ngày ra mắt hai gia đình – đầy ấm cúng và thiêng liêng. Một cột mốc quan trọng, đánh dấu bước chuyển mình từ hai người yêu thành hai gia đình gắn bó.",
-        image: timeline4,
+        image: A1,
         icon: <Church className="w-6 h-6" />,
     },
     {
@@ -60,7 +63,7 @@ const milestones: Milestone[] = [
         date: "07 Tháng 12, 2025",
         description:
             "Sau hơn một thập kỷ đồng hành, chúng tôi chính thức nên duyên vợ chồng. Một hành trình dài khép lại bằng lời hứa trọn đời – và mở ra chặng đường hạnh phúc mới.",
-        image: timeline4,
+        image: A9,
         icon: <Church className="w-6 h-6" />,
     },
 ];
@@ -142,9 +145,7 @@ const Timeline = () => {
                                                     alt={milestone.title}
                                                     loading={index < 2 ? "eager" : "lazy"}
                                                     decoding={index < 2 ? "sync" : "async"}
-                                                    width={800}
-                                                    height={600}
-                                                    className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"
+                                                    className="w-full object-cover transition-transform duration-700 group-hover:scale-110"
                                                     style={{
                                                         transform: "translateZ(0)",
                                                         backfaceVisibility: "hidden",

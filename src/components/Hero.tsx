@@ -1,6 +1,6 @@
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroImage from "@/assets/hero-wedding.jpg";
+import heroImage from "@/assets/hero-wedding.webp";
 import { useIntersectionAppear } from "@/hooks/useIntersectionAppear";
 
 interface HeroProps {

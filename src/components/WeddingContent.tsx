@@ -40,6 +40,9 @@ const WeddingContent = ({ autoPlayMusic = false }: WeddingContentProps) => {
     <div className="min-h-[100svh]">
       <FallingPetals />
       <Navigation />
+        <div style={{height:'70px'}}>
+
+        </div>
       <Hero
         brideName={brideShortName}
         groomName={groomShortName}
