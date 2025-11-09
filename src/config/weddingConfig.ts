@@ -72,35 +72,38 @@ export const groomBank = "Techcombank";
 export const groomBankAccount = "00000000000000";
 
 // ✅ Bạn có thể import nhiều ảnh nặng tại đây
-import gallery1 from "@/assets/gallery-1.jpg";
-import gallery2 from "@/assets/gallery-2.jpg";
-import gallery3 from "@/assets/gallery-3.jpg";
-import gallery4 from "@/assets/gallery-4.jpg";
+import A1 from "@/assets/A1.jpg";
+import A2 from "@/assets/A2.jpg";
+import A3 from "@/assets/A3.jpg";
+import A4 from "@/assets/A4.jpg";
+import A5 from "@/assets/A5.jpg";
+import A6 from "@/assets/A6.jpg";
+import A7 from "@/assets/A7.jpg";
+import A8 from "@/assets/A8.jpg";
+import A9 from "@/assets/A9.jpg";
+import A10 from "@/assets/A10.jpg";
+import A11 from "@/assets/A11.jpg";
+import A12 from "@/assets/A12.jpg";
+import A13 from "@/assets/A13.jpg";
+import A14 from "@/assets/A14.jpg";
+
+
 
 export const allImages = [
-    { src: gallery1, alt: "Wedding bouquet" },
-    { src: gallery2, alt: "Wedding rings" },
-    { src: gallery3, alt: "Reception table" },
-    { src: gallery4, alt: "Wedding cake" },
-    { src: gallery1, alt: "Wedding bouquet" },
-    { src: gallery2, alt: "Wedding rings" },
-    { src: gallery3, alt: "Reception table" },
-    { src: gallery4, alt: "Wedding cake" },
-    { src: gallery1, alt: "Wedding bouquet" },
-    { src: gallery2, alt: "Wedding rings" },
-    { src: gallery3, alt: "Reception table" },
-    { src: gallery4, alt: "Wedding cake" },
-    { src: gallery1, alt: "Wedding bouquet" },
-    { src: gallery2, alt: "Wedding rings" },
-    { src: gallery3, alt: "Reception table" },
-    { src: gallery4, alt: "Wedding cake" },
-    { src: gallery1, alt: "Wedding bouquet" },
-    { src: gallery2, alt: "Wedding rings" },
-    { src: gallery3, alt: "Reception table" },
-    { src: gallery4, alt: "Wedding cake" },
-    { src: gallery1, alt: "Wedding bouquet" },
-    { src: gallery2, alt: "Wedding rings" },
-    { src: gallery3, alt: "Reception table" },
-    { src: gallery4, alt: "Wedding cake" },
+    { src: A13, alt: "Wedding Image" },
+    { src: A2, alt: "Wedding Image" },
+    { src: A14, alt: "Wedding Image" },
+    { src: A3, alt: "Wedding Image" },
+    { src: A1, alt: "Wedding Image" },
+    { src: A5, alt: "Wedding Image" },
+    { src: A9, alt: "Wedding Image" },
+
+    { src: A6, alt: "Wedding Image" },
+    { src: A7, alt: "Wedding Image" },
+    { src: A8, alt: "Wedding Image" },
+    { src: A4, alt: "Wedding Image" },
+    { src: A10, alt: "Wedding Image" },
+    { src: A11, alt: "Wedding Image" },
+    { src: A12, alt: "Wedding Image" },
     // thêm các ảnh khác vào đây
 ];
