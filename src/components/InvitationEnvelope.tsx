@@ -94,7 +94,7 @@ const InvitationEnvelope = ({
                   rounded-xl
                   shadow-[0_24px_48px_rgba(0,0,0,0.22)]
                   border border-[rgba(217,181,184,0.6)]
-                  pt-24 px-6 pb-8
+                  pt-16 px-6 pb-8
                   text-center
                   transition-all duration-[400ms]
                 `}

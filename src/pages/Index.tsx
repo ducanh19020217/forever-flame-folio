@@ -8,6 +8,21 @@ const Index = () => {
     const [guestName, setGuestName] = useState("Quý khách");
 
     useEffect(() => {
+        if (overlayVisible) {
+            // Chặn scroll
+            document.body.style.overflow = "hidden";
+        } else {
+            // Cho phép scroll lại
+            document.body.style.overflow = "";
+        }
+
+        // Cleanup khi component unmount
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [overlayVisible]);
+
+    useEffect(() => {
         // Lấy tên khách mời từ URL
         const urlParams = new URLSearchParams(window.location.search);
         const toParam = urlParams.get("to");

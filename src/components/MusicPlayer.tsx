@@ -20,10 +20,8 @@ export default function MusicPlayer({ autoPlay = false }: MusicPlayerProps) {
     const isClient = useIsClient();
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [showPrompt, setShowPrompt] = useState(!autoPlay);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const unlockedRef = useRef(false);
-    const autoPlayAttempted = useRef(false);
 
     // iOS unlock: gọi play() trong một gesture rồi pause ngay
     const unlockAudio = async () => {
@@ -63,21 +61,37 @@ export default function MusicPlayer({ autoPlay = false }: MusicPlayerProps) {
     }, []);
 
     useEffect(() => {
-        if (autoPlay && isLoaded) {
-            const a = audioRef.current;
-            if (!a) return;
+        const a = audioRef.current;
+        if (!a) return;
+
+        const syncIsPlaying = () => setIsPlaying(!a.paused);
+
+        // nếu autoPlay bật
+        if (autoPlay) {
             (async () => {
                 try {
                     if (!a.src) a.src = SAFE_AUDIO_URL;
                     await a.play();
-                    setIsPlaying(true);
-                    setShowPrompt(false);
-                } catch (err) {
-                    console.warn("Autoplay blocked:", err);
-                    setShowPrompt(true);
+                } catch {
+                    // bị block thì vẫn để isPlaying false
+                } finally {
+                    syncIsPlaying();
                 }
             })();
+        } else {
+            // nếu autoPlay tắt thì pause audio
+            a.pause();
+            syncIsPlaying();
         }
+
+        // lắng nghe event play/pause từ audio
+        a.addEventListener("play", syncIsPlaying);
+        a.addEventListener("pause", syncIsPlaying);
+
+        return () => {
+            a.removeEventListener("play", syncIsPlaying);
+            a.removeEventListener("pause", syncIsPlaying);
+        };
     }, [autoPlay, isLoaded]);
 
     const togglePlay = async () => {

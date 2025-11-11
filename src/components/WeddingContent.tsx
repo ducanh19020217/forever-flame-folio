@@ -23,18 +23,14 @@ const WeddingContent = ({ autoPlayMusic = false }: WeddingContentProps) => {
     && /iPhone|iPad|iPod/.test(navigator.userAgent)
     && /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
-  const auto = useAutoScroll({
-    speed: 30,
-    resumeDelayMs: 2500,
-    enabled: true,
-    bottomStrategy: "stop",
-    respectReducedMotion: true,
-    maxFPS: isiOSSafari ? 30 : 60,
-  });
-
-  useEffect(() => {
-      console.log('autoPlayMusic', autoPlayMusic)
-  }, [autoPlayMusic]);
+  // const auto = useAutoScroll({
+  //   speed: 30,
+  //   resumeDelayMs: 2500,
+  //   enabled: true,
+  //   bottomStrategy: "stop",
+  //   respectReducedMotion: true,
+  //   maxFPS: isiOSSafari ? 30 : 60,
+  // });
 
   return (
     <div className="min-h-[100svh]">
