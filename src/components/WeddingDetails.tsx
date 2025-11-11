@@ -13,7 +13,7 @@ interface EventDetails {
 
 const WeddingDetails = () => {
   const ceremony: EventDetails = {
-    title: "Lễ Đón Dâu",
+    title: "Lễ Vu Quy",
     date: "Chủ nhật, 07 Tháng 12, 2025",
     time: "10:00 AM",
     venue: "Tư gia nhà gái",
@@ -63,6 +63,9 @@ const WeddingDetails = () => {
       <Button
         onClick={() => window.open(event.mapLink, '_blank')}
         variant="outline"
+        style={{
+            fontFamily: '"Playfair Display", serif'
+        }}
         className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground"
       >
         Xem Bản Đồ
@@ -95,7 +98,9 @@ const WeddingDetails = () => {
     <section id="details" className="section-spacing px-4 bg-background">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16 animate-fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+          <h2 style={{
+              fontFamily: '"Playfair Display", serif'
+          }} className="text-4xl md:text-5xl font-bold text-foreground mb-4">
             Chi Tiết Đám Cưới
           </h2>
           <p className="text-muted-foreground text-lg">

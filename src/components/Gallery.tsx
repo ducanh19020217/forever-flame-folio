@@ -1,16 +1,16 @@
-import { useState, useRef, useMemo } from "react";
+import {useState, useRef, useMemo, useEffect} from "react";
 import { X, Image as ImageIcon, Loader2 } from "lucide-react";
 import { useIntersectionAppear } from "@/hooks/useIntersectionAppear";
 import { allImages } from "@/config/weddingConfig";
 // ✅ Số ảnh hiển thị ban đầu
-const INITIAL_VISIBLE = 9;
+const INITIAL_VISIBLE = 14;
 
 const Gallery = () => {
     const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
     const [selectedImage, setSelectedImage] = useState<number | null>(null);
     const [albumOpen, setAlbumOpen] = useState(false);
 
-    const visibleImages = useMemo(() => allImages.slice(0, visibleCount), [visibleCount]);
+    const visibleImages = useMemo(() => allImages.slice(0, 14), [visibleCount]);
 
     const handleShowMore = () => {
         setAlbumOpen(true);
@@ -21,7 +21,10 @@ const Gallery = () => {
             <div className="max-w-6xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-16 animate-fade-in">
-                    <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+                    <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4"
+                    style={{
+                        fontFamily: '"Playfair Display", serif'
+                    }}>
                         Thư Viện Ảnh
                     </h2>
                     <p className="text-muted-foreground text-lg">
@@ -30,7 +33,7 @@ const Gallery = () => {
                 </div>
 
                 {/* Grid hiển thị ảnh */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                     {visibleImages.map((image, index) => (
                         <FadeInImageCard
                             key={index}
@@ -42,17 +45,20 @@ const Gallery = () => {
                 </div>
 
                 {/* Nút xem thêm */}
-                {allImages.length > visibleCount && (
-                    <div className="text-center mt-10">
-                        <button
-                            onClick={handleShowMore}
-                            className="px-6 py-3 rounded-full text-white bg-primary hover:bg-primary/90 shadow-romantic transition-all duration-300"
-                        >
-                            <ImageIcon className="inline w-5 h-5 mr-2" />
-                            Xem Toàn Bộ Album
-                        </button>
-                    </div>
-                )}
+                {/*{allImages.length > visibleCount && (*/}
+                {/*    <div className="text-center mt-10">*/}
+                {/*        <button*/}
+                {/*            onClick={handleShowMore}*/}
+                {/*            className="px-6 py-3 rounded-full text-white bg-primary hover:bg-primary/90 shadow-romantic transition-all duration-300"*/}
+                {/*            style={{*/}
+                {/*                fontFamily: '"Playfair Display", serif'*/}
+                {/*            }}*/}
+                {/*        >*/}
+                {/*            <ImageIcon className="inline w-5 h-5 mr-2" />*/}
+                {/*            Xem Toàn Bộ Album*/}
+                {/*        </button>*/}
+                {/*    </div>*/}
+                {/*)}*/}
             </div>
 
             {/* Lightbox ảnh đơn */}
@@ -90,24 +96,33 @@ const FadeInImageCard = ({
     const { ref, isVisible } = useIntersectionAppear({ threshold: 0.2 });
     const [loaded, setLoaded] = useState(false);
     const everVisibleRef = useRef(false);
-    if (isVisible && !everVisibleRef.current) everVisibleRef.current = true;
+
+    // chỉ đánh dấu đã thấy trong effect để không đổi trong render
+    useEffect(() => {
+        if (isVisible) {
+            everVisibleRef.current = true;
+        }
+    }, [isVisible]);
+
     const shown = everVisibleRef.current || isVisible;
 
     return (
         <div
             ref={ref as React.RefObject<HTMLDivElement>}
+            onClick={onClick}
             className={`
         relative overflow-hidden rounded-2xl shadow-soft group cursor-pointer aspect-square
-        transition-opacity transition-transform duration-700 ease-out
+        transition-opacity duration-500 ease-out
         ${shown ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}
       `}
-            onClick={onClick}
         >
+            {/* skeleton đơn giản, không animate-spin để đỡ giật */}
             {!loaded && (
-                <div className="absolute inset-0 flex items-center justify-center bg-muted/50 animate-pulse">
-                    <Loader2 className="w-6 h-6 text-muted-foreground animate-spin" />
+                <div className="absolute inset-0 bg-muted/40 flex items-center justify-center z-10">
+                    <Loader2 className="w-5 h-5 text-muted-foreground" />
                 </div>
             )}
+
             <img
                 src={image.src}
                 alt={image.alt}
@@ -116,17 +131,16 @@ const FadeInImageCard = ({
                 width={600}
                 height={600}
                 onLoad={() => setLoaded(true)}
-                className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 ${
-                    loaded ? "opacity-100" : "opacity-0"
-                }`}
+                className={`
+          w-full h-full object-cover transition-transform duration-700 group-hover:scale-110
+        `}
                 style={{
                     transform: "translateZ(0)",
                     backfaceVisibility: "hidden",
-                    willChange: "transform",
-                    contain: "paint layout style",
                 }}
             />
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center pointer-events-none">
                 <p className="text-white font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     Xem chi tiết
                 </p>
@@ -134,6 +148,7 @@ const FadeInImageCard = ({
         </div>
     );
 };
+
 
 /* ----------------------------------------------
    🔍 Lightbox (1 ảnh)
@@ -188,7 +203,7 @@ const AlbumModal = ({
                 <X className="w-8 h-8 hover:text-primary transition-colors" />
             </button>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
             {images.map((img, i) => (
                 <div
                     key={i}
@@ -203,7 +218,7 @@ const AlbumModal = ({
                         alt={img.alt}
                         loading="lazy"
                         decoding="async"
-                        className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                        className="w-full object-cover transition-transform duration-500 group-hover:scale-110"
                         style={{
                             transform: "translateZ(0)",
                             backfaceVisibility: "hidden",

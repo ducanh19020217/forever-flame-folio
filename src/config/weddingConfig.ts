@@ -67,9 +67,9 @@ export const weddingDate = "07.12.2025";
 export const weddingTime = "2025-12-07T10:00:00";
 export const quote = "Tình yêu là hành trình đẹp nhất của cuộc đời";
 export const brideBank = "Techcombank";
-export const brideBankAccount = "00000000000000";
+export const brideBankAccount = "P0379661900";
 export const groomBank = "Techcombank";
-export const groomBankAccount = "00000000000000";
+export const groomBankAccount = "1903 6433 6770 19";
 
 // ✅ Bạn có thể import nhiều ảnh nặng tại đây
 import A1 from "@/assets/A1.jpg";
@@ -86,24 +86,27 @@ import A11 from "@/assets/A11.jpg";
 import A12 from "@/assets/A12.jpg";
 import A13 from "@/assets/A13.jpg";
 import A14 from "@/assets/A14.jpg";
+import T31 from "@/assets/T31.jpeg";
 
 
 
 export const allImages = [
-    { src: A13, alt: "Wedding Image" },
-    { src: A2, alt: "Wedding Image" },
-    { src: A14, alt: "Wedding Image" },
-    { src: A3, alt: "Wedding Image" },
     { src: A1, alt: "Wedding Image" },
-    { src: A5, alt: "Wedding Image" },
-    { src: A9, alt: "Wedding Image" },
-
-    { src: A6, alt: "Wedding Image" },
-    { src: A7, alt: "Wedding Image" },
-    { src: A8, alt: "Wedding Image" },
-    { src: A4, alt: "Wedding Image" },
-    { src: A10, alt: "Wedding Image" },
-    { src: A11, alt: "Wedding Image" },
+    { src: T31, alt: "Wedding Image" },
     { src: A12, alt: "Wedding Image" },
+    // { src: A13, alt: "Wedding Image" },
+    { src: A14, alt: "Wedding Image" },
+    { src: A11, alt: "Wedding Image" },
+    { src: A10, alt: "Wedding Image" },
+    { src: A9, alt: "Wedding Image" },
+    { src: A8, alt: "Wedding Image" },
+    { src: A7, alt: "Wedding Image" },
+    { src: A6, alt: "Wedding Image" },
+    { src: A4, alt: "Wedding Image" },
+    { src: A5, alt: "Wedding Image" },
+    { src: A3, alt: "Wedding Image" },
+    { src: A2, alt: "Wedding Image" },
+
+
     // thêm các ảnh khác vào đây
 ];

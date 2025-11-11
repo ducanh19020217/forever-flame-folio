@@ -30,7 +30,11 @@ const WeddingTimelineAntd = ({ variant }: WeddingTimelineAntdProps) => {
         <div className="mt-4 text-center">
             <div
                 className="font-semibold text-[14px] leading-snug mb-4 flex flex-col"
-                style={{ color: variant.themeColor }}
+                style={{
+                    fontFamily: "'Playfair Display', serif",
+                    fontSize: '17px',
+                    color: variant.themeColor
+                }}
             >
                 <span>Lịch ngày cưới</span>
                 <span>(07-12-2025)</span>

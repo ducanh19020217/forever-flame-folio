@@ -47,7 +47,9 @@ const GiftSection = () => {
                         <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto lg:mx-0 mb-4 animate-pulse-glow">
                             <CreditCard className="w-8 h-8 text-primary" />
                         </div>
-                        <h3 className="text-2xl font-bold mb-2 text-foreground">
+                        <h3 className="text-2xl font-bold mb-2 text-foreground" style={{
+                            fontFamily: '"Playfair Display", serif'
+                        }}>
                             {side === "left" ? "Chú Rể" : "Cô Dâu"}
                         </h3>
                         <p className="text-lg text-foreground font-semibold mb-1">{name}</p>
@@ -96,9 +98,9 @@ const GiftSection = () => {
                                 }}
                             />
                         </div>
-                        <p className="text-sm text-muted-foreground mt-2 text-center lg:text-left">
-                            Quét mã QR để chuyển khoản
-                        </p>
+                        {/*<p className="text-sm text-muted-foreground mt-2 text-center lg:text-left">*/}
+                        {/*    Quét mã QR để chuyển khoản*/}
+                        {/*</p>*/}
                     </div>
                 </Card>
             </div>
@@ -110,7 +112,9 @@ const GiftSection = () => {
             <div className="container mx-auto max-w-6xl">
                 <div className="text-center mb-16 animate-fade-in-up">
                     <Gift className="w-12 h-12 mx-auto mb-4 text-primary" />
-                    <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+                    <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground" style={{
+                        fontFamily: '"Playfair Display", serif'
+                    }}>
                         Mừng Cưới
                     </h2>
                     <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -127,7 +131,7 @@ const GiftSection = () => {
                         bank={groomBank}
                         account={groomBankAccount}
                         accountName={groomFullName}
-                        qrData="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Bank:Vietcombank|Account:1234567890|Name:NGUYEN_DUKE_ANH"
+                        qrData="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020101021138580010A000000727012800069704070114190364336770190208QRIBFTTA53037045802VN83008400630475E6"
                         delay={0.1}
                     />
                     <BankCard
@@ -137,7 +141,7 @@ const GiftSection = () => {
                         bank={brideBank}
                         account={brideBankAccount}
                         accountName={brideFullName}
-                        qrData="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Bank:Vietcombank|Account:1234567890|Name:NGUYEN_DUKE_ANH"
+                        qrData="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020101021138580010A000000727012800069704070114190377152090140208QRIBFTTA5204601153037045802VN5903TCB6005Hanoi63041a24"
                         delay={0.1}
                     />
                 </div>
