@@ -86,7 +86,7 @@ const TimeBlock = memo(function TimeBlock({
             <div className="bg-card rounded-2xl shadow-md p-5 md:p-6 mb-3 min-w-[110px] flex items-center justify-center">
                 <DigitRoller value={value} />
             </div>
-            <span className="text-xs md:text-sm text-muted-foreground uppercase tracking-wider select-none">
+            <span className="text-xs md:text-sm text-muted-foreground tracking-wider select-none">
         {label}
       </span>
         </div>
@@ -149,7 +149,11 @@ const Countdown = ({ weddingDate = "2025-01-01T10:00:00" }: CountdownProps) => {
                 <div className="mb-10">
                     {/* bỏ animate-float/animate-fade-in lặp lại */}
                     <Heart className="w-12 h-12 mx-auto mb-6 text-primary" />
-                    <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
+                    <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-3"
+                    style={{
+                        fontFamily: "'Playfair Display', serif"
+                    }}
+                    >
                         Đếm Ngược Đến Ngày Trọng Đại
                     </h2>
                     <p className="text-muted-foreground text-base md:text-lg">

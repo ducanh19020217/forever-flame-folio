@@ -94,7 +94,7 @@ const InvitationEnvelope = ({
                   rounded-xl
                   shadow-[0_24px_48px_rgba(0,0,0,0.22)]
                   border border-[rgba(217,181,184,0.6)]
-                  pt-24 px-6 pb-8
+                  pt-16 px-6 pb-8
                   text-center
                   transition-all duration-[400ms]
                 `}
@@ -148,10 +148,10 @@ const InvitationEnvelope = ({
                                                 "0 10px 20px rgba(0,0,0,0.5), inset 0 0 5px rgba(255,255,255,0.65)",
                                         }}
                                     >
-                    <span className="text-[11px] leading-none font-semibold tracking-wide">
-                      ĐA ♡ HP
+                    <span className="text-[14px] leading-none font-semibold tracking-wide">
+                      A ♡ P
                     </span>
-                                        <span className="text-[9px] leading-none font-light">
+                                        <span className="text-[10px] leading-none font-light">
                       07·12·2025
                     </span>
                                         <div className="absolute inset-0 rounded-full border border-[rgba(0,0,0,0.3)] opacity-30 pointer-events-none" />
@@ -162,13 +162,16 @@ const InvitationEnvelope = ({
                                 <BrideGroomSketch color={variant.themeColor} />
 
                                 {/* Lời mời động theo role */}
-                                <p className="mt-4 text-[11px] uppercase tracking-[0.25em] text-[rgba(120,80,90,0.7)] font-light text-center">
+                                <p className="mt-4 text-[11px] uppercase tracking-[0.25em] text-[rgba(120,80,90,0.7)] font-light text-center" style={{
+                                    fontFamily: "'Playfair Display', serif",
+                                    fontSize: '17px'
+                                }}>
                                     {variant.inviteHeading}
                                 </p>
 
                                 <h1
-                                    className="mt-3 text-[28px] md:text-[32px] font-semibold normal-case leading-tight px-4 text-center"
-                                    style={{ color: variant.themeColor }}
+                                    className="mt-3 text-[28px] md:text-[48px] font-semibold normal-case leading-tight px-4 text-center"
+                                    style={{ color: variant.themeColor, fontFamily: '"Meow Script", cursive' }}
                                 >
                                     {displayName}
                                 </h1>
@@ -179,9 +182,9 @@ const InvitationEnvelope = ({
 
                                 <div
                                     className="mt-4 flex flex-col items-center"
-                                    style={{ color: variant.themeColor }}
+                                    style={{ color: variant.themeColor, fontFamily: '"Playwrite CU", cursive' }}
                                 >
-                                    <p className="font-script text-[28px] leading-none">
+                                    <p className=" text-[24px] leading-none">
                                         {variant.groomName}
                                     </p>
                                     <Heart
@@ -189,7 +192,7 @@ const InvitationEnvelope = ({
                                         fill="currentColor"
                                         style={{ color: variant.themeColor }}
                                     />
-                                    <p className="font-script text-[28px] leading-none">
+                                    <p className=" text-[24px] leading-none">
                                         {variant.brideName}
                                     </p>
                                 </div>
@@ -211,7 +214,9 @@ const InvitationEnvelope = ({
                                             boxShadow: "0 16px 32px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.4) inset",
                                         }}
                                     >
-                                        <span className="relative z-10">Mở thư &amp; Bắt đầu ✉</span>
+                                        <span style={{
+                                            fontFamily: '"Playfair Display", serif'
+                                        }} className="relative z-10">Mở thư &amp; Bắt đầu ✉</span>
 
                                         {/* 🌸 Viền sáng xoay nhẹ */}
                                         <span className="absolute inset-0 rounded-full border-[2px] border-transparent

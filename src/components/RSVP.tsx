@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Heart } from "lucide-react";
 
 // ====== cấu hình GAS ======
-const GAS_KEY = "AKfycbwUEYpa23JpnYtNiFfdnUdxKJ8fsHj7Qw8aTq3JWm6WQbxjFcRai-Prv46ItSA9L4xH";
+const GAS_KEY = "AKfycbz0ZDc3A2fCfZM_RziucCSvFOWRTFzLNpT_X7HVEAHN6stsGUVag4HIF2L4tCXTL7Qm";
 const GAS_URL = `https://script.google.com/macros/s/${GAS_KEY}/exec`; // doPost/doGet
 
 type Attendance = "yes" | "no";
@@ -141,11 +141,13 @@ const RSVP = () => {
     };
 
     return (
-        <section id="rsvp" className="section-spacing bg-background">
+        <section id="rsvp" className="section-spacing bg-background scroll-mt-20">
             <div className="max-w-xl mx-auto px-4">
                 <div className="text-center mb-12 animate-fade-in">
                     <Heart className="w-12 h-12 mx-auto mb-6 text-primary" />
-                    <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">Xác Nhận Tham Dự</h2>
+                    <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{
+                        fontFamily: '"Playfair Display", serif'
+                    }}>Xác Nhận Tham Dự</h2>
                     <p className="text-muted-foreground text-lg">
                         Vui lòng cho chúng tôi biết bạn có thể tham dự không
                     </p>
@@ -244,6 +246,9 @@ const RSVP = () => {
                                 type="submit"
                                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-6 text-lg font-semibold mt-4"
                                 disabled={loading}
+                                style={{
+                                    fontFamily: '"Playfair Display", serif'
+                                }}
                             >
                                 {loading ? "Đang gửi..." : "Gửi Xác Nhận"}
                             </Button>

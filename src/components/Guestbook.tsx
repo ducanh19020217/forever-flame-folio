@@ -160,7 +160,9 @@ const Guestbook = () => {
             <div className="max-w-4xl mx-auto">
                 <div className="text-center mb-12 animate-fade-in">
                     <MessageCircle className="w-12 h-12 mx-auto mb-6 text-primary"/>
-                    <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+                    <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{
+                        fontFamily: '"Playfair Display", serif'
+                    }}>
                         Sổ Lưu Bút
                     </h2>
                     <p className="text-muted-foreground text-lg">
@@ -185,6 +187,10 @@ const Guestbook = () => {
                             type="submit"
                             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                             disabled={loading}
+                            style={{
+                                fontFamily: '"Playfair Display", serif',
+                                fontSize: '18px'
+                            }}
                         >
                             Gửi Lời Chúc
                         </Button>
@@ -193,7 +199,9 @@ const Guestbook = () => {
 
                 {!loading && messages?.length === 0 && <div className="space-y-4">
                     {loading ? (
-                        <div className="text-center py-12 text-muted-foreground">
+                        <div className="text-center py-12 text-muted-foreground" style={{
+                            fontFamily: '"Playfair Display", serif'
+                        }}>
                             Đang tải lời chúc...
                         </div>
                     ) : <div className="text-center py-12 bg-card rounded-2xl shadow-soft">
